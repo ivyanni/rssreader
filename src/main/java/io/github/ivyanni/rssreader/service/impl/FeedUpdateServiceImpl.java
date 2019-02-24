@@ -2,7 +2,7 @@ package io.github.ivyanni.rssreader.service.impl;
 
 import io.github.ivyanni.rssreader.config.ApplicationConfiguration;
 import io.github.ivyanni.rssreader.config.FeedConfiguration;
-import io.github.ivyanni.rssreader.service.FeedService;
+import io.github.ivyanni.rssreader.service.FeedUpdateService;
 import io.github.ivyanni.rssreader.service.tasks.RetrieveFeedTask;
 
 import java.time.Duration;
@@ -16,24 +16,23 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author Ilia Vianni on 23.02.2019.
  */
-public class FeedServiceImpl implements FeedService {
+public class FeedUpdateServiceImpl implements FeedUpdateService {
     private ApplicationConfiguration applicationConfiguration;
     private ScheduledExecutorService executor;
 
-    public FeedServiceImpl(ApplicationConfiguration applicationConfiguration) {
+    public FeedUpdateServiceImpl(ApplicationConfiguration applicationConfiguration) {
         this.applicationConfiguration = applicationConfiguration;
         initExecutor();
     }
 
     @Override
-    public void addFeed(String feedName, FeedConfiguration feedConfiguration) {
+    public void scheduleFeedUpdate(String feedName, FeedConfiguration feedConfiguration) {
         ScheduledFuture future = executor.scheduleAtFixedRate(new RetrieveFeedTask(feedConfiguration), 0, feedConfiguration.getTimeout(), TimeUnit.SECONDS);
         feedConfiguration.setScheduledFuture(future);
-        applicationConfiguration.getFeedConfigurations().put(feedName, feedConfiguration);
     }
 
     @Override
-    public void rescheduleFeed(String feedName, Long newTimeout) {
+    public void rescheduleFeedUpdate(String feedName, Long newTimeout) {
         FeedConfiguration feedConfiguration = applicationConfiguration.getFeedConfigurations().get(feedName);
         ScheduledFuture future = feedConfiguration.getScheduledFuture();
         future.cancel(false);
@@ -47,11 +46,10 @@ public class FeedServiceImpl implements FeedService {
     public void removeFeed(String feedName) {
         FeedConfiguration feedConfiguration = applicationConfiguration.getFeedConfigurations().get(feedName);
         feedConfiguration.getScheduledFuture().cancel(true);
-        applicationConfiguration.getFeedConfigurations().remove(feedName);
     }
 
     @Override
-    public void start() {
+    public void startService() {
         applicationConfiguration.getFeedConfigurations().values().forEach(feedConfiguration -> {
             long timeout = feedConfiguration.getTimeout();
             Date lastRequestTime = feedConfiguration.getLastRequestTime();
@@ -62,7 +60,7 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
-    public void stop() {
+    public void stopService() {
         executor.shutdown();
     }
 

@@ -3,11 +3,10 @@ package io.github.ivyanni.rssreader;
 import io.github.ivyanni.rssreader.config.ApplicationConfiguration;
 import io.github.ivyanni.rssreader.constants.CLIConstants;
 import io.github.ivyanni.rssreader.controller.ConsoleController;
-import io.github.ivyanni.rssreader.converters.RomeAttributesConverter;
 import io.github.ivyanni.rssreader.service.ConfigurationLoaderService;
-import io.github.ivyanni.rssreader.service.FeedService;
+import io.github.ivyanni.rssreader.service.FeedUpdateService;
 import io.github.ivyanni.rssreader.service.impl.ConfigurationLoaderServiceImpl;
-import io.github.ivyanni.rssreader.service.impl.FeedServiceImpl;
+import io.github.ivyanni.rssreader.service.impl.FeedUpdateServiceImpl;
 
 import java.util.Scanner;
 
@@ -17,14 +16,14 @@ import java.util.Scanner;
 public class Application {
 
     public static void main(String[] args) {
-        RomeAttributesConverter.fillAttributesMap();
+        RomeAttributesHolder.fillAttributesMap();
         ConfigurationLoaderService configurationLoaderService = new ConfigurationLoaderServiceImpl();
         ApplicationConfiguration applicationConfiguration = configurationLoaderService.loadConfigurationFromFile();
 
-        FeedService feedService = new FeedServiceImpl(applicationConfiguration);
-        feedService.start();
+        FeedUpdateService feedUpdateService = new FeedUpdateServiceImpl(applicationConfiguration);
+        feedUpdateService.startService();
 
-        ConsoleController consoleController = new ConsoleController(applicationConfiguration, feedService);
+        ConsoleController consoleController = new ConsoleController(applicationConfiguration, feedUpdateService);
 
         consoleController.showWelcomeMessage();
 
@@ -35,16 +34,16 @@ public class Application {
             command = command.toLowerCase();
             switch (command) {
                 case CLIConstants.ADD_NEW_FEED_COMMAND:
-                    consoleController.createNewFeedDialog(scanner);
+                    consoleController.addNewFeed(scanner);
                     break;
                 case CLIConstants.SHOW_EXISTING_FEEDS_COMMAND:
                     consoleController.listExistingFeed();
                     break;
                 case CLIConstants.CHANGE_FEED_PARAMS_COMMAND:
-                    consoleController.showChangeFeedDialog(scanner);
+                    consoleController.changeExistingFeed(scanner);
                     break;
                 case CLIConstants.REMOVE_FEED_COMMAND:
-                    consoleController.createRemoveFeedDialog(scanner);
+                    consoleController.removeFeed(scanner);
                     break;
                 case CLIConstants.EXIT_COMMAND:
                     consoleController.exit(scanner);

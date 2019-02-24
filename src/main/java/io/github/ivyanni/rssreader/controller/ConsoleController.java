@@ -1,10 +1,10 @@
 package io.github.ivyanni.rssreader.controller;
 
+import io.github.ivyanni.rssreader.RomeAttributesHolder;
 import io.github.ivyanni.rssreader.config.ApplicationConfiguration;
 import io.github.ivyanni.rssreader.config.FeedConfiguration;
 import io.github.ivyanni.rssreader.constants.CLIConstants;
-import io.github.ivyanni.rssreader.converters.RomeAttributesConverter;
-import io.github.ivyanni.rssreader.service.FeedService;
+import io.github.ivyanni.rssreader.service.FeedUpdateService;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -16,18 +16,31 @@ import java.util.Scanner;
 import java.util.Set;
 
 /**
+ * Controller that manages CLI and interaction with user.
+ *
  * @author Ilia Vianni on 23.02.2019.
  */
 public class ConsoleController {
     private ApplicationConfiguration applicationConfiguration;
-    private FeedService feedService;
+    private FeedUpdateService feedUpdateService;
 
-    public ConsoleController(ApplicationConfiguration applicationConfiguration, FeedService feedService) {
+    /**
+     * Instantiates a new Console controller.
+     *
+     * @param applicationConfiguration the application configuration
+     * @param feedUpdateService        the feed update service
+     */
+    public ConsoleController(ApplicationConfiguration applicationConfiguration, FeedUpdateService feedUpdateService) {
         this.applicationConfiguration = applicationConfiguration;
-        this.feedService = feedService;
+        this.feedUpdateService = feedUpdateService;
     }
 
-    public void createNewFeedDialog(Scanner scanner) {
+    /**
+     * Starts dialog with user that leads to new feed creation.
+     *
+     * @param scanner the scanner
+     */
+    public void addNewFeed(Scanner scanner) {
         String feedName = inputFeedName(scanner, true);
         URL feedUrl = inputFeedUrl(scanner);
         Long timeout = inputNumber(scanner, CLIConstants.ENTER_TIMEOUT_MESSAGE);
@@ -40,11 +53,17 @@ public class ConsoleController {
         feedConfiguration.setFilename(fileName);
         feedConfiguration.setItemsAmount(amount);
         feedConfiguration.setParams(selectedParams);
-        feedService.addFeed(feedName, feedConfiguration);
+        feedUpdateService.scheduleFeedUpdate(feedName, feedConfiguration);
+        applicationConfiguration.getFeedConfigurations().put(feedName, feedConfiguration);
         System.out.println(CLIConstants.FEED_ADDED_MESSAGE);
     }
 
-    public void showChangeFeedDialog(Scanner scanner) {
+    /**
+     * Starts dialog that leads to modifications in existing feed.
+     *
+     * @param scanner the scanner
+     */
+    public void changeExistingFeed(Scanner scanner) {
         String feedName = inputFeedName(scanner, false);
         FeedConfiguration feedConfiguration = applicationConfiguration.getFeedConfigurations().get(feedName);
         System.out.print(CLIConstants.ENTER_COMMAND_MODIFY_MESSAGE);
@@ -58,7 +77,7 @@ public class ConsoleController {
             case CLIConstants.CHANGE_TIMEOUT_COMMAND:
                 Long timeout = inputNumber(scanner, CLIConstants.ENTER_TIMEOUT_MESSAGE);
                 feedConfiguration.setTimeout(timeout);
-                feedService.rescheduleFeed(feedName, timeout);
+                feedUpdateService.rescheduleFeedUpdate(feedName, timeout);
                 break;
             case CLIConstants.CHANGE_AMOUNT_COMMAND:
                 Long amount = inputNumber(scanner, CLIConstants.ENTER_AMOUNT_MESSAGE);
@@ -75,17 +94,31 @@ public class ConsoleController {
         }
     }
 
-    public void createRemoveFeedDialog(Scanner scanner) {
+    /**
+     * Starts dialog that results to feed removal.
+     *
+     * @param scanner the scanner
+     */
+    public void removeFeed(Scanner scanner) {
         String feedName = inputFeedName(scanner, false);
-        feedService.removeFeed(feedName);
+        feedUpdateService.removeFeed(feedName);
+        applicationConfiguration.getFeedConfigurations().remove(feedName);
         System.out.println(CLIConstants.FEED_REMOVED_MESSAGE);
     }
 
+    /**
+     * Shutdowns existing services.
+     *
+     * @param scanner the scanner
+     */
     public void exit(Scanner scanner) {
-        feedService.stop();
+        feedUpdateService.stopService();
         scanner.close();
     }
 
+    /**
+     * Shows existing feeds.
+     */
     public void listExistingFeed() {
         if (!applicationConfiguration.getFeedConfigurations().isEmpty()) {
             System.out.println(CLIConstants.EXISTING_FEEDS_MESSAGE);
@@ -97,6 +130,9 @@ public class ConsoleController {
         }
     }
 
+    /**
+     * Shows welcome message.
+     */
     public void showWelcomeMessage() {
         System.out.println("---------------------");
         System.out.println(CLIConstants.WELCOME_MESSAGE);
@@ -150,7 +186,7 @@ public class ConsoleController {
     }
 
     private List<String> inputParameters(Scanner scanner) {
-        Set<String> allowedParams = RomeAttributesConverter.getAllowedParameters();
+        Set<String> allowedParams = RomeAttributesHolder.getAllowedParameters();
         System.out.println(CLIConstants.ALLOWED_PARAMETERS_MESSAGE + String.join(", ", allowedParams));
         System.out.print(CLIConstants.ENTER_PARAMETERS_MESSAGE);
         String paramLine = scanner.nextLine();

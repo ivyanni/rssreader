@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Main configuration pojo
+ *
  * @author Ilia Vianni on 23.02.2019.
  */
 public class ApplicationConfiguration {

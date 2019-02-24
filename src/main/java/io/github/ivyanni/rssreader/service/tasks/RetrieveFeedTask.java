@@ -22,18 +22,16 @@ import java.util.Calendar;
 public class RetrieveFeedTask implements Runnable {
     private static final Logger LOGGER = LoggerFactory.getLogger(RetrieveFeedTask.class);
     private FeedConfiguration feedConfiguration;
-    private FeedOutputComposer feedOutputComposer;
 
     public RetrieveFeedTask(FeedConfiguration feedConfiguration) {
         this.feedConfiguration = feedConfiguration;
-        this.feedOutputComposer = new FeedOutputComposer();
     }
 
     @Override
     public void run() {
         try {
             SyndFeed feed = retrieveFeed(feedConfiguration);
-            String outputString = feedOutputComposer.compose(feedConfiguration, feed);
+            String outputString = new FeedOutputComposer().compose(feedConfiguration, feed);
             if (outputString.length() > 0) {
                 File file = new File(feedConfiguration.getFilename());
                 saveToFile(file, outputString);

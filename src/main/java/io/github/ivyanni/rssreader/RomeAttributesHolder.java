@@ -1,4 +1,4 @@
-package io.github.ivyanni.rssreader.converters;
+package io.github.ivyanni.rssreader;
 
 import com.rometools.rome.feed.synd.SyndContent;
 import com.rometools.rome.feed.synd.SyndEntry;
@@ -9,11 +9,16 @@ import java.util.Set;
 import java.util.function.Function;
 
 /**
+ * Holder that contains mapping from ROME attribute to function returning string value.
+ *
  * @author Ilia Vianni on 24.02.2019.
  */
-public class RomeAttributesConverter {
+public class RomeAttributesHolder {
     private static Map<String, Function<SyndEntry, String>> attributeToFunctionMap = new HashMap<>();
 
+    /**
+     * Fill map with predefined parameters.
+     */
     public static void fillAttributesMap() {
         attributeToFunctionMap.put("title", SyndEntry::getTitle);
         attributeToFunctionMap.put("author", SyndEntry::getAuthor);
@@ -26,6 +31,13 @@ public class RomeAttributesConverter {
         attributeToFunctionMap.put("comments", SyndEntry::getComments);
     }
 
+    /**
+     * Gets string value by feed's entry and specified attribute.
+     *
+     * @param entry     feed's entry
+     * @param attribute ROME attribute
+     * @return the String value by defined feed's entry and attribute
+     */
     public static synchronized String getValueByAttribute(SyndEntry entry, String attribute) {
         if (attributeToFunctionMap.containsKey(attribute)) {
             String value = attributeToFunctionMap.get(attribute).apply(entry);
@@ -36,6 +48,11 @@ public class RomeAttributesConverter {
         return "";
     }
 
+    /**
+     * Gets all parameters that user is allowed to select.
+     *
+     * @return Set that contains allowed parameters
+     */
     public static Set<String> getAllowedParameters() {
         return attributeToFunctionMap.keySet();
     }
