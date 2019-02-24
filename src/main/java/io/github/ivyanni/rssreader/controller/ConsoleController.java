@@ -3,11 +3,15 @@ package io.github.ivyanni.rssreader.controller;
 import io.github.ivyanni.rssreader.config.ApplicationConfiguration;
 import io.github.ivyanni.rssreader.config.FeedConfiguration;
 import io.github.ivyanni.rssreader.constants.CLIConstants;
+import io.github.ivyanni.rssreader.converters.RomeAttributesConverter;
 import io.github.ivyanni.rssreader.service.FeedService;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 /**
  * @author Ilia Vianni on 23.02.2019.
@@ -24,13 +28,15 @@ public class ConsoleController {
     public void createNewFeedDialog(Scanner scanner) {
         URL feedUrl = inputFeedUrl(scanner);
         System.out.print(CLIConstants.ENTER_TIMEOUT_MESSAGE);
-        Long timeout = scanner.nextLong();
+        Long timeout = Long.parseLong(scanner.nextLine());
         System.out.print(CLIConstants.ENTER_FILENAME_MESSAGE);
-        String fileName = scanner.next();
+        String fileName = scanner.nextLine();
+        List<String> selectedParams = inputParameters(scanner);
         FeedConfiguration feedConfiguration = new FeedConfiguration();
         feedConfiguration.setFeedUrl(feedUrl);
         feedConfiguration.setTimeout(timeout);
         feedConfiguration.setFilename(fileName);
+        feedConfiguration.setParams(selectedParams);
         feedService.addFeed(feedConfiguration);
         System.out.println(CLIConstants.FEED_ADDED_MESSAGE);
     }
@@ -52,11 +58,25 @@ public class ConsoleController {
         }
     }
 
+    private List<String> inputParameters(Scanner scanner) {
+        Set<String> allowedParams = RomeAttributesConverter.getAllowedParameters();
+        System.out.println("Allowed parameters: " + String.join(", ", allowedParams));
+        System.out.print("Specify parameters (separated by comma): ");
+        String paramLine = scanner.nextLine();
+        if(paramLine.isEmpty()) {
+            return List.copyOf(allowedParams);
+        } else {
+            paramLine = paramLine.toLowerCase();
+            paramLine = paramLine.replaceAll("\\s*", "");
+            return Arrays.asList(paramLine.split("\\s*,\\s*"));
+        }
+    }
+
     private URL inputFeedUrl(Scanner scanner) {
         URL feedUrl = null;
         while (feedUrl == null) {
             System.out.print(CLIConstants.ENTER_CORRECT_URL_MESSAGE);
-            String enteredUrl = scanner.next();
+            String enteredUrl = scanner.nextLine();
             try {
                 feedUrl = new URL(enteredUrl);
             } catch (MalformedURLException ex) {

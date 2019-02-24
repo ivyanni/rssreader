@@ -5,6 +5,7 @@ import com.rometools.rome.feed.synd.SyndEntry;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 
 /**
@@ -26,9 +27,13 @@ public class RomeAttributesConverter {
         attributeToFunctionMap.put("comments", SyndEntry::getComments);
     }
 
-    public static String getValueByAttribute(SyndEntry entry, String attribute) {
+    public static synchronized String getValueByAttribute(SyndEntry entry, String attribute) {
         if (attributeToFunctionMap.containsKey(attribute)) {
             return attributeToFunctionMap.get(attribute).apply(entry);
         } else return "";
+    }
+
+    public static Set<String> getAllowedParameters() {
+        return attributeToFunctionMap.keySet();
     }
 }

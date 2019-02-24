@@ -29,7 +29,7 @@ public class Application {
         while(true) {
             System.out.print(CLIConstants.ENTER_COMMAND_MESSAGE);
             Scanner scanner = new Scanner(System.in);
-            String command = scanner.next();
+            String command = scanner.nextLine();
             command = command.toLowerCase();
             switch (command) {
                 case CLIConstants.ADD_NEW_FEED_COMMAND:

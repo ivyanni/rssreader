@@ -5,7 +5,6 @@ import com.rometools.rome.feed.synd.SyndFeed;
 import io.github.ivyanni.rssreader.config.FeedConfiguration;
 import io.github.ivyanni.rssreader.converters.RomeAttributesConverter;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -26,14 +25,7 @@ public class FeedOutputComposer {
         Date lastSavedMessageDate = selectedEntries.get(selectedEntries.size() - 1).getPublishedDate();
         feedConfiguration.setLastSavedMessageDate(lastSavedMessageDate);
 
-        List<String> newlist = new ArrayList<>();
-        newlist.add("title");
-        newlist.add("author");
-        newlist.add("content");
-        newlist.add("description");
-        newlist.add("link");
-
-        return createStringByAttributes(selectedEntries, newlist);
+        return createStringByAttributes(selectedEntries, feedConfiguration.getParams());
     }
 
     private String createStringByAttributes(List<SyndEntry> selectedEntries, List<String> attributes) {
