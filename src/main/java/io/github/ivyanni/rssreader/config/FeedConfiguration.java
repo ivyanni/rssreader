@@ -11,7 +11,6 @@ import java.util.concurrent.ScheduledFuture;
  * @author Ilia Vianni on 23.02.2019.
  */
 public class FeedConfiguration {
-    private String feedName;
     private Long timeout;
     private String filename;
     private Integer itemsAmount;
@@ -21,14 +20,6 @@ public class FeedConfiguration {
     private Date lastSavedMessageDate;
     @JsonIgnore
     private ScheduledFuture scheduledFuture;
-
-    public String getFeedName() {
-        return feedName;
-    }
-
-    public void setFeedName(String feedName) {
-        this.feedName = feedName;
-    }
 
     public Long getTimeout() {
         return timeout;

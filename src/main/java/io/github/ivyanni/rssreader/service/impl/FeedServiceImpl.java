@@ -26,22 +26,22 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
-    public void addFeed(FeedConfiguration feedConfiguration) {
+    public void addFeed(String feedName, FeedConfiguration feedConfiguration) {
         ScheduledFuture future = executor.scheduleAtFixedRate(new RetrieveFeedTask(feedConfiguration), 0, feedConfiguration.getTimeout(), TimeUnit.SECONDS);
         feedConfiguration.setScheduledFuture(future);
-        applicationConfiguration.getFeedConfigurationList().add(feedConfiguration);
+        applicationConfiguration.getFeedConfigurations().put(feedName, feedConfiguration);
     }
 
     @Override
     public void removeFeed(String feedName) {
-        FeedConfiguration feedConfiguration = applicationConfiguration.getFeedConfigurationList().stream().filter(config -> config.getFeedName().equalsIgnoreCase(feedName)).findFirst().orElseThrow();
+        FeedConfiguration feedConfiguration = applicationConfiguration.getFeedConfigurations().get(feedName);
         feedConfiguration.getScheduledFuture().cancel(true);
-        applicationConfiguration.getFeedConfigurationList().remove(feedConfiguration);
+        applicationConfiguration.getFeedConfigurations().remove(feedName);
     }
 
     @Override
     public void start() {
-        applicationConfiguration.getFeedConfigurationList().forEach(feedConfiguration -> {
+        applicationConfiguration.getFeedConfigurations().values().forEach(feedConfiguration -> {
             long timeout = feedConfiguration.getTimeout();
             Date lastRequestTime = feedConfiguration.getLastRequestTime();
             long initialDelay = 0;

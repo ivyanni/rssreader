@@ -17,10 +17,9 @@ public class RomeAttributesConverter {
     public static void fillAttributesMap() {
         attributeToFunctionMap.put("title", SyndEntry::getTitle);
         attributeToFunctionMap.put("author", SyndEntry::getAuthor);
-        attributeToFunctionMap.put("publishedDate", entry -> entry.getPublishedDate().toString());
-        attributeToFunctionMap.put("updatedDate", entry -> entry.getUpdatedDate().toString());
-        attributeToFunctionMap.put("titleEx", entry -> entry.getTitleEx().getValue());
-        attributeToFunctionMap.put("description", entry -> entry.getDescription().getValue());
+        attributeToFunctionMap.put("publishedDate", entry -> entry.getPublishedDate() != null ? entry.getPublishedDate().toString() : null);
+        attributeToFunctionMap.put("updatedDate", entry -> entry.getUpdatedDate() != null ? entry.getUpdatedDate().toString() : null);
+        attributeToFunctionMap.put("description", entry -> entry.getDescription() != null ? entry.getDescription().getValue() : null);
         attributeToFunctionMap.put("content", entry -> entry.getContents().stream().map(SyndContent::getValue).reduce("", String::concat));
         attributeToFunctionMap.put("uri", SyndEntry::getUri);
         attributeToFunctionMap.put("link", SyndEntry::getLink);
@@ -29,8 +28,12 @@ public class RomeAttributesConverter {
 
     public static synchronized String getValueByAttribute(SyndEntry entry, String attribute) {
         if (attributeToFunctionMap.containsKey(attribute)) {
-            return attributeToFunctionMap.get(attribute).apply(entry);
-        } else return "";
+            String value = attributeToFunctionMap.get(attribute).apply(entry);
+            if(value != null) {
+                return attributeToFunctionMap.get(attribute).apply(entry);
+            }
+        }
+        return "";
     }
 
     public static Set<String> getAllowedParameters() {

@@ -11,9 +11,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.function.Predicate;
 
 /**
  * @author Ilia Vianni on 23.02.2019.
@@ -34,13 +34,18 @@ public class ConsoleController {
         String fileName = inputFilename(scanner);
         List<String> selectedParams = inputParameters(scanner);
         FeedConfiguration feedConfiguration = new FeedConfiguration();
-        feedConfiguration.setFeedName(feedName);
         feedConfiguration.setFeedUrl(feedUrl);
         feedConfiguration.setTimeout(timeout);
         feedConfiguration.setFilename(fileName);
         feedConfiguration.setParams(selectedParams);
-        feedService.addFeed(feedConfiguration);
+        feedService.addFeed(feedName, feedConfiguration);
         System.out.println(CLIConstants.FEED_ADDED_MESSAGE);
+    }
+
+    public FeedConfiguration showChangeFeedDialog(Scanner scanner) {
+        String feedName = inputFeedName(scanner, false);
+        FeedConfiguration feedConfiguration = applicationConfiguration.getFeedConfigurations().get(feedName);
+        return feedConfiguration;
     }
 
     public void createRemoveFeedDialog(Scanner scanner) {
@@ -49,11 +54,16 @@ public class ConsoleController {
         System.out.println(CLIConstants.FEED_REMOVED_MESSAGE);
     }
 
+    public void exit(Scanner scanner) {
+        feedService.stop();
+        scanner.close();
+    }
+
     public void listExistingFeed() {
-        if (!applicationConfiguration.getFeedConfigurationList().isEmpty()) {
+        if (!applicationConfiguration.getFeedConfigurations().isEmpty()) {
             System.out.println(CLIConstants.EXISTING_FEEDS_MESSAGE);
-            applicationConfiguration.getFeedConfigurationList().forEach(feedConfiguration -> {
-                System.out.println(feedConfiguration.getFeedUrl() + " / " + feedConfiguration.getTimeout());
+            applicationConfiguration.getFeedConfigurations().forEach((name, config) -> {
+                System.out.println(name + " / " + config.getFeedUrl() + " / " + config.getFilename());
             });
         } else {
             System.out.println(CLIConstants.NO_EXISTING_FEEDS_MESSAGE);
@@ -100,17 +110,12 @@ public class ConsoleController {
     }
 
     private String inputFeedName(Scanner scanner, boolean unique) {
-        boolean isUniqueName = false;
-        String resultName = "";
-        while (!isUniqueName) {
+        String resultName = null;
+        while (resultName == null) {
             System.out.print(CLIConstants.ENTER_FEED_NAME_MESSAGE);
             String feedName = scanner.nextLine();
-            List<FeedConfiguration> feedConfigurationList = applicationConfiguration.getFeedConfigurationList();
-            Predicate<FeedConfiguration> feedNamePredicate = config -> config.getFeedName().equalsIgnoreCase(feedName);
-            isUniqueName = unique ?
-                    feedConfigurationList.stream().noneMatch(feedNamePredicate) :
-                    feedConfigurationList.stream().anyMatch(feedNamePredicate);
-            if (!isUniqueName) {
+            Map<String, FeedConfiguration> feedConfigurations = applicationConfiguration.getFeedConfigurations();
+            if (unique == feedConfigurations.containsKey(feedName)) {
                 System.out.println(CLIConstants.INCORRECT_FEEDNAME_MESSAGE);
             } else resultName = feedName;
         }
@@ -125,7 +130,6 @@ public class ConsoleController {
         if (paramLine.isEmpty()) {
             return List.copyOf(allowedParams);
         } else {
-            paramLine = paramLine.toLowerCase();
             paramLine = paramLine.replaceAll("\\s*", "");
             return Arrays.asList(paramLine.split("\\s*,\\s*"));
         }

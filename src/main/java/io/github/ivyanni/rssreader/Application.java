@@ -22,8 +22,9 @@ public class Application {
         ApplicationConfiguration applicationConfiguration = configurationLoaderService.loadConfigurationFromFile();
 
         FeedService feedService = new FeedServiceImpl(applicationConfiguration);
-        ConsoleController consoleController = new ConsoleController(applicationConfiguration, feedService);
         feedService.start();
+
+        ConsoleController consoleController = new ConsoleController(applicationConfiguration, feedService);
 
         consoleController.showWelcomeMessage();
 
@@ -43,10 +44,8 @@ public class Application {
                     consoleController.createRemoveFeedDialog(scanner);
                     break;
                 case CLIConstants.EXIT_COMMAND:
-                    feedService.stop();
+                    consoleController.exit(scanner);
                     configurationLoaderService.saveConfigurationToFile(applicationConfiguration);
-                    System.out.println("Feeds processing was stopped");
-                    scanner.close();
                     return;
             }
         }

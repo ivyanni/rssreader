@@ -7,7 +7,7 @@ import io.github.ivyanni.rssreader.config.FeedConfiguration;
  */
 public interface FeedService {
 
-    void addFeed(FeedConfiguration feedConfiguration);
+    void addFeed(String feedName, FeedConfiguration feedConfiguration);
 
     void removeFeed(String feedName);
 
