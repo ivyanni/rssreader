@@ -1,6 +1,5 @@
 package io.github.ivyanni.rssreader.service;
 
-import io.github.ivyanni.rssreader.config.ApplicationConfiguration;
 import io.github.ivyanni.rssreader.config.FeedConfiguration;
 
 import java.net.URL;
@@ -10,11 +9,11 @@ import java.net.URL;
  */
 public interface FeedService {
 
-    void addFeed(ApplicationConfiguration applicationConfiguration, FeedConfiguration feedConfiguration);
+    void addFeed(FeedConfiguration feedConfiguration);
 
-    void removeFeed(ApplicationConfiguration applicationConfiguration, URL feedUrl);
+    void removeFeed(URL feedUrl);
 
-    void start(ApplicationConfiguration applicationConfiguration);
+    void start();
 
-    void stop(ApplicationConfiguration applicationConfiguration);
+    void stop();
 }

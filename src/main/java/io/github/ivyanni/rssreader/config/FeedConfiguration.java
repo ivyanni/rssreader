@@ -17,6 +17,7 @@ public class FeedConfiguration {
     private URL feedUrl;
     private List<String> params;
     private Date lastRequestTime;
+    private Date lastSavedMessageDate;
     @JsonIgnore
     private ScheduledFuture scheduledFuture;
 
@@ -74,5 +75,13 @@ public class FeedConfiguration {
 
     public void setScheduledFuture(ScheduledFuture scheduledFuture) {
         this.scheduledFuture = scheduledFuture;
+    }
+
+    public Date getLastSavedMessageDate() {
+        return lastSavedMessageDate;
+    }
+
+    public void setLastSavedMessageDate(Date lastSavedMessageDate) {
+        this.lastSavedMessageDate = lastSavedMessageDate;
     }
 }
