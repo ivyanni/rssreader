@@ -3,7 +3,9 @@ package io.github.ivyanni.rssreader.service.composers;
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
 import io.github.ivyanni.rssreader.config.FeedConfiguration;
+import io.github.ivyanni.rssreader.converters.RomeAttributesConverter;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -15,21 +17,35 @@ import java.util.stream.Collectors;
 public class FeedOutputComposer {
 
     public String compose(FeedConfiguration feedConfiguration, SyndFeed feed) {
-        StringBuilder str = new StringBuilder();
         List<SyndEntry> selectedEntries = feed.getEntries().stream()
-                .filter(entry -> entry.getPublishedDate().after(feedConfiguration.getLastSavedMessageDate())
-                        || feedConfiguration.getLastSavedMessageDate() == null)
+                .filter(entry -> feedConfiguration.getLastSavedMessageDate() == null ||
+                        entry.getPublishedDate().after(feedConfiguration.getLastSavedMessageDate()))
                 .sorted(Comparator.comparing(SyndEntry::getPublishedDate))
                 .collect(Collectors.toList());
 
         Date lastSavedMessageDate = selectedEntries.get(selectedEntries.size() - 1).getPublishedDate();
-
-        selectedEntries.forEach(entry -> {
-            str.append(entry.getPublishedDate()).append(": ")
-                    .append(entry.getTitle()).append(System.getProperty("line.separator"));
-        });
-
         feedConfiguration.setLastSavedMessageDate(lastSavedMessageDate);
+
+        List<String> newlist = new ArrayList<>();
+        newlist.add("title");
+        newlist.add("author");
+        newlist.add("content");
+        newlist.add("description");
+        newlist.add("link");
+
+        return createStringByAttributes(selectedEntries, newlist);
+    }
+
+    private String createStringByAttributes(List<SyndEntry> selectedEntries, List<String> attributes) {
+        StringBuilder str = new StringBuilder();
+        selectedEntries.forEach(entry -> {
+            attributes.forEach(attr -> {
+                str.append(attr).append(": ")
+                        .append(RomeAttributesConverter.getValueByAttribute(entry, attr))
+                        .append(System.getProperty("line.separator"));
+            });
+            str.append("-----").append(System.getProperty("line.separator"));
+        });
         return str.toString();
     }
 }

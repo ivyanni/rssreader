@@ -3,6 +3,7 @@ package io.github.ivyanni.rssreader;
 import io.github.ivyanni.rssreader.config.ApplicationConfiguration;
 import io.github.ivyanni.rssreader.constants.CLIConstants;
 import io.github.ivyanni.rssreader.controller.ConsoleController;
+import io.github.ivyanni.rssreader.converters.RomeAttributesConverter;
 import io.github.ivyanni.rssreader.service.ConfigurationLoaderService;
 import io.github.ivyanni.rssreader.service.FeedService;
 import io.github.ivyanni.rssreader.service.impl.ConfigurationLoaderServiceImpl;
@@ -16,12 +17,14 @@ import java.util.Scanner;
 public class Application {
 
     public static void main(String[] args) {
+        RomeAttributesConverter.fillAttributesMap();
         ConfigurationLoaderService configurationLoaderService = new ConfigurationLoaderServiceImpl();
         ApplicationConfiguration applicationConfiguration = configurationLoaderService.loadConfigurationFromFile();
 
         FeedService feedService = new FeedServiceImpl(applicationConfiguration);
         ConsoleController consoleController = new ConsoleController(applicationConfiguration, feedService);
         feedService.start();
+
 
         while(true) {
             System.out.print(CLIConstants.ENTER_COMMAND_MESSAGE);
