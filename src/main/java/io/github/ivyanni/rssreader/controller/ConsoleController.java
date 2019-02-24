@@ -2,6 +2,7 @@ package io.github.ivyanni.rssreader.controller;
 
 import io.github.ivyanni.rssreader.config.ApplicationConfiguration;
 import io.github.ivyanni.rssreader.config.FeedConfiguration;
+import io.github.ivyanni.rssreader.constants.CLIConstants;
 import io.github.ivyanni.rssreader.service.FeedService;
 
 import java.net.MalformedURLException;
@@ -21,43 +22,47 @@ public class ConsoleController {
     }
 
     public void createNewFeedDialog(Scanner scanner) {
-        System.out.print("Enter URL: ");
-        String feedUrl = scanner.next();
-        System.out.print("Enter timeout (sec): ");
+        URL feedUrl = inputFeedUrl(scanner);
+        System.out.print(CLIConstants.ENTER_TIMEOUT_MESSAGE);
         Long timeout = scanner.nextLong();
-        System.out.print("Enter filename: ");
+        System.out.print(CLIConstants.ENTER_FILENAME_MESSAGE);
         String fileName = scanner.next();
-        try {
-            FeedConfiguration feedConfiguration = new FeedConfiguration();
-            feedConfiguration.setFeedUrl(new URL(feedUrl));
-            feedConfiguration.setTimeout(timeout);
-            feedConfiguration.setFilename(fileName);
-            feedService.addFeed(feedConfiguration);
-            System.out.println("Feed was added");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
+        FeedConfiguration feedConfiguration = new FeedConfiguration();
+        feedConfiguration.setFeedUrl(feedUrl);
+        feedConfiguration.setTimeout(timeout);
+        feedConfiguration.setFilename(fileName);
+        feedService.addFeed(feedConfiguration);
+        System.out.println(CLIConstants.FEED_ADDED_MESSAGE);
     }
 
     public void createRemoveFeedDialog(Scanner scanner) {
-        System.out.print("Enter URL: ");
-        String feedUrlToRemove = scanner.next();
-        try {
-            feedService.removeFeed(new URL(feedUrlToRemove));
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        System.out.println("Feed " + feedUrlToRemove + " was removed");
+        URL feedUrl = inputFeedUrl(scanner);
+        feedService.removeFeed(feedUrl);
+        System.out.println(CLIConstants.FEED_REMOVED_MESSAGE);
     }
 
     public void listExistingFeed() {
-        if(!applicationConfiguration.getFeedConfigurationList().isEmpty()) {
-            System.out.println("Existing feeds:");
+        if (!applicationConfiguration.getFeedConfigurationList().isEmpty()) {
+            System.out.println(CLIConstants.EXISTING_FEEDS_MESSAGE);
             applicationConfiguration.getFeedConfigurationList().forEach(feedConfiguration -> {
                 System.out.println(feedConfiguration.getFeedUrl() + " / " + feedConfiguration.getTimeout());
             });
         } else {
-            System.out.println("No existing feeds");
+            System.out.println(CLIConstants.NO_EXISTING_FEEDS_MESSAGE);
         }
+    }
+
+    private URL inputFeedUrl(Scanner scanner) {
+        URL feedUrl = null;
+        while (feedUrl == null) {
+            System.out.print(CLIConstants.ENTER_CORRECT_URL_MESSAGE);
+            String enteredUrl = scanner.next();
+            try {
+                feedUrl = new URL(enteredUrl);
+            } catch (MalformedURLException ex) {
+                System.out.println(CLIConstants.INCORRECT_URL_ENTERED_MESSAGE);
+            }
+        }
+        return feedUrl;
     }
 }

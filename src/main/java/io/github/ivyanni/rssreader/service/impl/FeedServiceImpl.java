@@ -3,6 +3,7 @@ package io.github.ivyanni.rssreader.service.impl;
 import io.github.ivyanni.rssreader.config.ApplicationConfiguration;
 import io.github.ivyanni.rssreader.config.FeedConfiguration;
 import io.github.ivyanni.rssreader.service.FeedService;
+import io.github.ivyanni.rssreader.service.tasks.RetrieveFeedTask;
 
 import java.net.URL;
 import java.time.Duration;
@@ -23,13 +24,6 @@ public class FeedServiceImpl implements FeedService {
     public FeedServiceImpl(ApplicationConfiguration applicationConfiguration) {
         this.applicationConfiguration = applicationConfiguration;
         initExecutor();
-    }
-
-    private void initExecutor() {
-        if(applicationConfiguration.getCorePoolSize() == null) {
-            applicationConfiguration.setCorePoolSize(4);
-        }
-        this.executor = Executors.newScheduledThreadPool(applicationConfiguration.getCorePoolSize());
     }
 
     @Override
@@ -64,5 +58,12 @@ public class FeedServiceImpl implements FeedService {
     @Override
     public void stop() {
         executor.shutdown();
+    }
+
+    private void initExecutor() {
+        if(applicationConfiguration.getCorePoolSize() == null) {
+            applicationConfiguration.setCorePoolSize(4);
+        }
+        this.executor = Executors.newScheduledThreadPool(applicationConfiguration.getCorePoolSize());
     }
 }

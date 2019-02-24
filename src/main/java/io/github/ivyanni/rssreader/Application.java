@@ -1,6 +1,7 @@
 package io.github.ivyanni.rssreader;
 
 import io.github.ivyanni.rssreader.config.ApplicationConfiguration;
+import io.github.ivyanni.rssreader.constants.CLIConstants;
 import io.github.ivyanni.rssreader.controller.ConsoleController;
 import io.github.ivyanni.rssreader.service.ConfigurationLoaderService;
 import io.github.ivyanni.rssreader.service.FeedService;
@@ -23,20 +24,21 @@ public class Application {
         feedService.start();
 
         while(true) {
-            System.out.print("Enter command: ");
+            System.out.print(CLIConstants.ENTER_COMMAND_MESSAGE);
             Scanner scanner = new Scanner(System.in);
             String command = scanner.next();
+            command = command.toLowerCase();
             switch (command) {
-                case "add":
+                case CLIConstants.ADD_NEW_FEED_COMMAND:
                     consoleController.createNewFeedDialog(scanner);
                     break;
-                case "list":
+                case CLIConstants.SHOW_EXISTING_FEEDS_COMMAND:
                     consoleController.listExistingFeed();
                     break;
-                case "remove":
+                case CLIConstants.REMOVE_FEED_COMMAND:
                     consoleController.createRemoveFeedDialog(scanner);
                     break;
-                case "exit":
+                case CLIConstants.EXIT_COMMAND:
                     feedService.stop();
                     configurationLoaderService.saveConfigurationToFile(applicationConfiguration);
                     System.out.println("Feeds processing was stopped");
