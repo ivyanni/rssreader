@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * @author Ilia Vianni on 23.02.2019.
@@ -26,13 +27,14 @@ public class ConsoleController {
     }
 
     public void createNewFeedDialog(Scanner scanner) {
+        String feedName = inputFeedName(scanner, true);
         URL feedUrl = inputFeedUrl(scanner);
-        System.out.print(CLIConstants.ENTER_TIMEOUT_MESSAGE);
-        Long timeout = Long.parseLong(scanner.nextLine());
+        Long timeout = inputTimeout(scanner);
         System.out.print(CLIConstants.ENTER_FILENAME_MESSAGE);
         String fileName = scanner.nextLine();
         List<String> selectedParams = inputParameters(scanner);
         FeedConfiguration feedConfiguration = new FeedConfiguration();
+        feedConfiguration.setFeedName(feedName);
         feedConfiguration.setFeedUrl(feedUrl);
         feedConfiguration.setTimeout(timeout);
         feedConfiguration.setFilename(fileName);
@@ -42,8 +44,8 @@ public class ConsoleController {
     }
 
     public void createRemoveFeedDialog(Scanner scanner) {
-        URL feedUrl = inputFeedUrl(scanner);
-        feedService.removeFeed(feedUrl);
+        String feedName = inputFeedName(scanner, false);
+        feedService.removeFeed(feedName);
         System.out.println(CLIConstants.FEED_REMOVED_MESSAGE);
     }
 
@@ -56,6 +58,43 @@ public class ConsoleController {
         } else {
             System.out.println(CLIConstants.NO_EXISTING_FEEDS_MESSAGE);
         }
+    }
+
+    private Long inputTimeout(Scanner scanner) {
+        Long resultTimeout = null;
+        while (resultTimeout == null) {
+            System.out.print(CLIConstants.ENTER_TIMEOUT_MESSAGE);
+            String timeoutStr = scanner.nextLine();
+            try {
+                Long timeout = Long.parseLong(timeoutStr);
+                if(timeout > 0) {
+                    resultTimeout = timeout;
+                } else {
+                    System.out.println("Please enter a correct number");
+                }
+            } catch (NumberFormatException ex) {
+                System.out.println("Please enter a correct number");
+            }
+        }
+        return resultTimeout;
+    }
+
+    private String inputFeedName(Scanner scanner, boolean unique) {
+        boolean isUniqueName = false;
+        String resultName = "";
+        while(!isUniqueName) {
+            System.out.print("Enter feed name: ");
+            String feedName = scanner.nextLine();
+            List<FeedConfiguration> feedConfigurationList = applicationConfiguration.getFeedConfigurationList();
+            Predicate<FeedConfiguration> feedNamePredicate = config -> config.getFeedName().equalsIgnoreCase(feedName);
+            isUniqueName = unique ?
+                    feedConfigurationList.stream().noneMatch(feedNamePredicate) :
+                    feedConfigurationList.stream().anyMatch(feedNamePredicate);
+            if(!isUniqueName) {
+                System.out.println("Entered name is not correct.");
+            } else resultName = feedName;
+        }
+        return resultName;
     }
 
     private List<String> inputParameters(Scanner scanner) {

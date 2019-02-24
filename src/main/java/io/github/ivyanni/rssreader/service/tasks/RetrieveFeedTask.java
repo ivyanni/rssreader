@@ -38,9 +38,11 @@ public class RetrieveFeedTask implements Runnable {
                 File file = new File(feedConfiguration.getFilename());
                 saveToFile(file, outputString);
             }
+        } catch (FeedException ex) {
+            LOGGER.error("Exception was occurred while parsing feed data: {}", feedConfiguration.getFeedName(), ex);
         } catch (UnknownHostException ex) {
             LOGGER.error("Check your internet connection. Connection to {} was failed", ex.getMessage(), ex);
-        } catch (FeedException | IOException ex) {
+        } catch (IOException ex) {
             LOGGER.error("Exception was occurred while retrieving feed data: {}", ex.getMessage(), ex);
         }
     }

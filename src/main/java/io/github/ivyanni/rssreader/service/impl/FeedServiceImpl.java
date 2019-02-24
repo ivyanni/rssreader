@@ -5,7 +5,6 @@ import io.github.ivyanni.rssreader.config.FeedConfiguration;
 import io.github.ivyanni.rssreader.service.FeedService;
 import io.github.ivyanni.rssreader.service.tasks.RetrieveFeedTask;
 
-import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
@@ -34,8 +33,8 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
-    public void removeFeed(URL feedUrl) {
-        FeedConfiguration feedConfiguration = applicationConfiguration.getFeedConfigurationList().stream().filter(config -> config.getFeedUrl().equals(feedUrl)).findFirst().orElseThrow();
+    public void removeFeed(String feedName) {
+        FeedConfiguration feedConfiguration = applicationConfiguration.getFeedConfigurationList().stream().filter(config -> config.getFeedName().equalsIgnoreCase(feedName)).findFirst().orElseThrow();
         feedConfiguration.getScheduledFuture().cancel(true);
         applicationConfiguration.getFeedConfigurationList().remove(feedConfiguration);
     }
