@@ -33,6 +33,17 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
+    public void rescheduleFeed(String feedName, Long newTimeout) {
+        FeedConfiguration feedConfiguration = applicationConfiguration.getFeedConfigurations().get(feedName);
+        ScheduledFuture future = feedConfiguration.getScheduledFuture();
+        future.cancel(false);
+        Date lastRequestTime = feedConfiguration.getLastRequestTime();
+        Long initialDelay = calculateInitialDelay(lastRequestTime, newTimeout);
+        future = executor.scheduleAtFixedRate(new RetrieveFeedTask(feedConfiguration), initialDelay, newTimeout, TimeUnit.SECONDS);
+        feedConfiguration.setScheduledFuture(future);
+    }
+
+    @Override
     public void removeFeed(String feedName) {
         FeedConfiguration feedConfiguration = applicationConfiguration.getFeedConfigurations().get(feedName);
         feedConfiguration.getScheduledFuture().cancel(true);
@@ -44,11 +55,7 @@ public class FeedServiceImpl implements FeedService {
         applicationConfiguration.getFeedConfigurations().values().forEach(feedConfiguration -> {
             long timeout = feedConfiguration.getTimeout();
             Date lastRequestTime = feedConfiguration.getLastRequestTime();
-            long initialDelay = 0;
-            if (lastRequestTime != null) {
-                long duration = Math.abs(Duration.between(Instant.now(), lastRequestTime.toInstant()).toSeconds());
-                initialDelay = duration > timeout ? 0 : timeout - duration;
-            }
+            Long initialDelay = calculateInitialDelay(lastRequestTime, timeout);
             ScheduledFuture future = executor.scheduleAtFixedRate(new RetrieveFeedTask(feedConfiguration), initialDelay, timeout, TimeUnit.SECONDS);
             feedConfiguration.setScheduledFuture(future);
         });
@@ -57,6 +64,15 @@ public class FeedServiceImpl implements FeedService {
     @Override
     public void stop() {
         executor.shutdown();
+    }
+
+    private Long calculateInitialDelay(Date lastRequestTime, Long timeout) {
+        long initialDelay = 0;
+        if (lastRequestTime != null) {
+            long duration = Math.abs(Duration.between(Instant.now(), lastRequestTime.toInstant()).toSeconds());
+            initialDelay = duration > timeout ? 0 : timeout - duration;
+        }
+        return initialDelay;
     }
 
     private void initExecutor() {

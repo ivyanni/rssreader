@@ -7,8 +7,10 @@ public class CLIConstants {
     /* Console messages */
     public static final String WELCOME_MESSAGE = "Welcome to RSS Reader";
     public static final String ENTER_COMMAND_MESSAGE = "Enter command (add|modify|remove|list|exit): ";
+    public static final String ENTER_COMMAND_MODIFY_MESSAGE = "What do you want to modify (url|timeout|chunk|filename|params): ";
     public static final String ENTER_CORRECT_URL_MESSAGE = "Enter correct URL: ";
     public static final String ENTER_TIMEOUT_MESSAGE = "Enter timeout (sec): ";
+    public static final String ENTER_AMOUNT_MESSAGE = "Enter chunk length: ";
     public static final String ENTER_FILENAME_MESSAGE = "Enter file name: ";
     public static final String INCORRECT_URL_ENTERED_MESSAGE = "Entered incorrect URL";
     public static final String EXISTING_FEEDS_MESSAGE = "Existing feeds:";
@@ -28,4 +30,9 @@ public class CLIConstants {
     public static final String SHOW_EXISTING_FEEDS_COMMAND = "list";
     public static final String HELP_COMMAND = "help";
     public static final String EXIT_COMMAND = "exit";
+    public static final String CHANGE_URL_COMMAND = "url";
+    public static final String CHANGE_AMOUNT_COMMAND = "chunk";
+    public static final String CHANGE_PARAMETERS_COMMAND = "params";
+    public static final String CHANGE_TIMEOUT_COMMAND = "timeout";
+    public static final String CHANGE_FILENAME_COMMAND = "filename";
 }

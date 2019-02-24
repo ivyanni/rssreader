@@ -30,22 +30,49 @@ public class ConsoleController {
     public void createNewFeedDialog(Scanner scanner) {
         String feedName = inputFeedName(scanner, true);
         URL feedUrl = inputFeedUrl(scanner);
-        Long timeout = inputTimeout(scanner);
+        Long timeout = inputNumber(scanner, CLIConstants.ENTER_TIMEOUT_MESSAGE);
+        Long amount = inputNumber(scanner, CLIConstants.ENTER_AMOUNT_MESSAGE);
         String fileName = inputFilename(scanner);
         List<String> selectedParams = inputParameters(scanner);
         FeedConfiguration feedConfiguration = new FeedConfiguration();
         feedConfiguration.setFeedUrl(feedUrl);
         feedConfiguration.setTimeout(timeout);
         feedConfiguration.setFilename(fileName);
+        feedConfiguration.setItemsAmount(amount);
         feedConfiguration.setParams(selectedParams);
         feedService.addFeed(feedName, feedConfiguration);
         System.out.println(CLIConstants.FEED_ADDED_MESSAGE);
     }
 
-    public FeedConfiguration showChangeFeedDialog(Scanner scanner) {
+    public void showChangeFeedDialog(Scanner scanner) {
         String feedName = inputFeedName(scanner, false);
         FeedConfiguration feedConfiguration = applicationConfiguration.getFeedConfigurations().get(feedName);
-        return feedConfiguration;
+        System.out.print(CLIConstants.ENTER_COMMAND_MODIFY_MESSAGE);
+        String command = scanner.nextLine();
+        switch (command) {
+            case CLIConstants.CHANGE_URL_COMMAND:
+                URL feedUrl = inputFeedUrl(scanner);
+                feedConfiguration.setFeedUrl(feedUrl);
+                feedConfiguration.setLastSavedMessageDate(null);
+                break;
+            case CLIConstants.CHANGE_TIMEOUT_COMMAND:
+                Long timeout = inputNumber(scanner, CLIConstants.ENTER_TIMEOUT_MESSAGE);
+                feedConfiguration.setTimeout(timeout);
+                feedService.rescheduleFeed(feedName, timeout);
+                break;
+            case CLIConstants.CHANGE_AMOUNT_COMMAND:
+                Long amount = inputNumber(scanner, CLIConstants.ENTER_AMOUNT_MESSAGE);
+                feedConfiguration.setItemsAmount(amount);
+                break;
+            case CLIConstants.CHANGE_FILENAME_COMMAND:
+                String filename = inputFilename(scanner);
+                feedConfiguration.setFilename(filename);
+                break;
+            case CLIConstants.CHANGE_PARAMETERS_COMMAND:
+                List<String> params = inputParameters(scanner);
+                feedConfiguration.setParams(params);
+                break;
+        }
     }
 
     public void createRemoveFeedDialog(Scanner scanner) {
@@ -90,10 +117,10 @@ public class ConsoleController {
         return resultFilename;
     }
 
-    private Long inputTimeout(Scanner scanner) {
+    private Long inputNumber(Scanner scanner, String message) {
         Long resultTimeout = null;
         while (resultTimeout == null) {
-            System.out.print(CLIConstants.ENTER_TIMEOUT_MESSAGE);
+            System.out.print(message);
             String timeoutStr = scanner.nextLine();
             try {
                 Long timeout = Long.parseLong(timeoutStr);

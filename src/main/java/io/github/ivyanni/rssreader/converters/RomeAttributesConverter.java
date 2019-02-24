@@ -30,7 +30,7 @@ public class RomeAttributesConverter {
         if (attributeToFunctionMap.containsKey(attribute)) {
             String value = attributeToFunctionMap.get(attribute).apply(entry);
             if(value != null) {
-                return attributeToFunctionMap.get(attribute).apply(entry);
+                return value;
             }
         }
         return "";

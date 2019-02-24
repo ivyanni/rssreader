@@ -22,6 +22,10 @@ public class FeedOutputComposer {
                 .sorted(Comparator.comparing(SyndEntry::getPublishedDate))
                 .collect(Collectors.toList());
 
+        if(selectedEntries.size() > feedConfiguration.getItemsAmount()) {
+            selectedEntries = selectedEntries.subList(0, feedConfiguration.getItemsAmount().intValue());
+        }
+
         Date lastSavedMessageDate = selectedEntries.get(selectedEntries.size() - 1).getPublishedDate();
         feedConfiguration.setLastSavedMessageDate(lastSavedMessageDate);
 

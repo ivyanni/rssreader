@@ -40,6 +40,9 @@ public class Application {
                 case CLIConstants.SHOW_EXISTING_FEEDS_COMMAND:
                     consoleController.listExistingFeed();
                     break;
+                case CLIConstants.CHANGE_FEED_PARAMS_COMMAND:
+                    consoleController.showChangeFeedDialog(scanner);
+                    break;
                 case CLIConstants.REMOVE_FEED_COMMAND:
                     consoleController.createRemoveFeedDialog(scanner);
                     break;

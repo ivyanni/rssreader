@@ -13,7 +13,7 @@ import java.util.concurrent.ScheduledFuture;
 public class FeedConfiguration {
     private Long timeout;
     private String filename;
-    private Integer itemsAmount;
+    private Long itemsAmount;
     private URL feedUrl;
     private List<String> params;
     private Date lastRequestTime;
@@ -37,11 +37,11 @@ public class FeedConfiguration {
         this.filename = filename;
     }
 
-    public Integer getItemsAmount() {
+    public Long getItemsAmount() {
         return itemsAmount;
     }
 
-    public void setItemsAmount(Integer itemsAmount) {
+    public void setItemsAmount(Long itemsAmount) {
         this.itemsAmount = itemsAmount;
     }
 

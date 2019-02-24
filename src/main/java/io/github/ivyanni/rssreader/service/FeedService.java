@@ -9,6 +9,8 @@ public interface FeedService {
 
     void addFeed(String feedName, FeedConfiguration feedConfiguration);
 
+    void rescheduleFeed(String feedName, Long newTimeout);
+
     void removeFeed(String feedName);
 
     void start();
