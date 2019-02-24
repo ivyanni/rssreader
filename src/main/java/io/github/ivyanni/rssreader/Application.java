@@ -25,8 +25,9 @@ public class Application {
         ConsoleController consoleController = new ConsoleController(applicationConfiguration, feedService);
         feedService.start();
 
+        consoleController.showWelcomeMessage();
 
-        while(true) {
+        while (true) {
             System.out.print(CLIConstants.ENTER_COMMAND_MESSAGE);
             Scanner scanner = new Scanner(System.in);
             String command = scanner.nextLine();

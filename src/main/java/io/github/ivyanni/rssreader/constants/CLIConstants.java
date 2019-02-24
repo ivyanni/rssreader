@@ -5,6 +5,7 @@ package io.github.ivyanni.rssreader.constants;
  */
 public class CLIConstants {
     /* Console messages */
+    public static final String WELCOME_MESSAGE = "Welcome to RSS Reader";
     public static final String ENTER_COMMAND_MESSAGE = "Enter command (add|modify|remove|list|exit): ";
     public static final String ENTER_CORRECT_URL_MESSAGE = "Enter correct URL: ";
     public static final String ENTER_TIMEOUT_MESSAGE = "Enter timeout (sec): ";
@@ -14,11 +15,17 @@ public class CLIConstants {
     public static final String NO_EXISTING_FEEDS_MESSAGE = "No existing feeds";
     public static final String FEED_ADDED_MESSAGE = "Feed was successfully added";
     public static final String FEED_REMOVED_MESSAGE = "Feed was successfully removed";
+    public static final String ENTER_FEED_NAME_MESSAGE = "Enter feed name: ";
+    public static final String INCORRECT_FEEDNAME_MESSAGE = "Entered feed name is incorrect";
+    public static final String ALLOWED_PARAMETERS_MESSAGE = "Allowed parameters: ";
+    public static final String ENTER_PARAMETERS_MESSAGE = "Specify parameters (separated by comma): ";
+    public static final String INCORRECT_NUMBER_MESSAGE = "Entered number is incorrect";
 
     /* Console commands */
     public static final String ADD_NEW_FEED_COMMAND = "add";
     public static final String CHANGE_FEED_PARAMS_COMMAND = "modify";
     public static final String REMOVE_FEED_COMMAND = "remove";
     public static final String SHOW_EXISTING_FEEDS_COMMAND = "list";
+    public static final String HELP_COMMAND = "help";
     public static final String EXIT_COMMAND = "exit";
 }

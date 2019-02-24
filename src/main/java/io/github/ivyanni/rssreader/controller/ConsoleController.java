@@ -6,6 +6,7 @@ import io.github.ivyanni.rssreader.constants.CLIConstants;
 import io.github.ivyanni.rssreader.converters.RomeAttributesConverter;
 import io.github.ivyanni.rssreader.service.FeedService;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
@@ -30,8 +31,7 @@ public class ConsoleController {
         String feedName = inputFeedName(scanner, true);
         URL feedUrl = inputFeedUrl(scanner);
         Long timeout = inputTimeout(scanner);
-        System.out.print(CLIConstants.ENTER_FILENAME_MESSAGE);
-        String fileName = scanner.nextLine();
+        String fileName = inputFilename(scanner);
         List<String> selectedParams = inputParameters(scanner);
         FeedConfiguration feedConfiguration = new FeedConfiguration();
         feedConfiguration.setFeedName(feedName);
@@ -60,6 +60,26 @@ public class ConsoleController {
         }
     }
 
+    public void showWelcomeMessage() {
+        System.out.println("---------------------");
+        System.out.println(CLIConstants.WELCOME_MESSAGE);
+        System.out.println("---------------------");
+        System.out.println(" ");
+    }
+
+    private String inputFilename(Scanner scanner) {
+        String resultFilename = null;
+        while (resultFilename == null) {
+            System.out.print(CLIConstants.ENTER_FILENAME_MESSAGE);
+            String fileName = scanner.nextLine();
+            File file = new File(fileName);
+            if (!file.canRead() && !file.canWrite() && !file.isFile()) {
+                resultFilename = fileName;
+            }
+        }
+        return resultFilename;
+    }
+
     private Long inputTimeout(Scanner scanner) {
         Long resultTimeout = null;
         while (resultTimeout == null) {
@@ -67,13 +87,13 @@ public class ConsoleController {
             String timeoutStr = scanner.nextLine();
             try {
                 Long timeout = Long.parseLong(timeoutStr);
-                if(timeout > 0) {
+                if (timeout > 0) {
                     resultTimeout = timeout;
                 } else {
-                    System.out.println("Please enter a correct number");
+                    System.out.println(CLIConstants.INCORRECT_NUMBER_MESSAGE);
                 }
             } catch (NumberFormatException ex) {
-                System.out.println("Please enter a correct number");
+                System.out.println(CLIConstants.INCORRECT_NUMBER_MESSAGE);
             }
         }
         return resultTimeout;
@@ -82,16 +102,16 @@ public class ConsoleController {
     private String inputFeedName(Scanner scanner, boolean unique) {
         boolean isUniqueName = false;
         String resultName = "";
-        while(!isUniqueName) {
-            System.out.print("Enter feed name: ");
+        while (!isUniqueName) {
+            System.out.print(CLIConstants.ENTER_FEED_NAME_MESSAGE);
             String feedName = scanner.nextLine();
             List<FeedConfiguration> feedConfigurationList = applicationConfiguration.getFeedConfigurationList();
             Predicate<FeedConfiguration> feedNamePredicate = config -> config.getFeedName().equalsIgnoreCase(feedName);
             isUniqueName = unique ?
                     feedConfigurationList.stream().noneMatch(feedNamePredicate) :
                     feedConfigurationList.stream().anyMatch(feedNamePredicate);
-            if(!isUniqueName) {
-                System.out.println("Entered name is not correct.");
+            if (!isUniqueName) {
+                System.out.println(CLIConstants.INCORRECT_FEEDNAME_MESSAGE);
             } else resultName = feedName;
         }
         return resultName;
@@ -99,10 +119,10 @@ public class ConsoleController {
 
     private List<String> inputParameters(Scanner scanner) {
         Set<String> allowedParams = RomeAttributesConverter.getAllowedParameters();
-        System.out.println("Allowed parameters: " + String.join(", ", allowedParams));
-        System.out.print("Specify parameters (separated by comma): ");
+        System.out.println(CLIConstants.ALLOWED_PARAMETERS_MESSAGE + String.join(", ", allowedParams));
+        System.out.print(CLIConstants.ENTER_PARAMETERS_MESSAGE);
         String paramLine = scanner.nextLine();
-        if(paramLine.isEmpty()) {
+        if (paramLine.isEmpty()) {
             return List.copyOf(allowedParams);
         } else {
             paramLine = paramLine.toLowerCase();

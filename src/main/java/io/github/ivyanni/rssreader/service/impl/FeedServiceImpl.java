@@ -60,7 +60,7 @@ public class FeedServiceImpl implements FeedService {
     }
 
     private void initExecutor() {
-        if(applicationConfiguration.getCorePoolSize() == null) {
+        if (applicationConfiguration.getCorePoolSize() == null) {
             applicationConfiguration.setCorePoolSize(4);
         }
         this.executor = Executors.newScheduledThreadPool(applicationConfiguration.getCorePoolSize());
