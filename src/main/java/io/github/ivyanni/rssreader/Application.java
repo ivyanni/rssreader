@@ -4,9 +4,9 @@ import io.github.ivyanni.rssreader.config.ApplicationConfiguration;
 import io.github.ivyanni.rssreader.constants.CLIConstants;
 import io.github.ivyanni.rssreader.controller.ConsoleController;
 import io.github.ivyanni.rssreader.service.ConfigurationLoaderService;
-import io.github.ivyanni.rssreader.service.FeedUpdaterService;
+import io.github.ivyanni.rssreader.service.FeedUpdateSchedulerService;
 import io.github.ivyanni.rssreader.service.impl.ConfigurationLoaderServiceImpl;
-import io.github.ivyanni.rssreader.service.impl.FeedUpdaterServiceImpl;
+import io.github.ivyanni.rssreader.service.impl.FeedUpdateSchedulerServiceImpl;
 
 import java.util.Scanner;
 
@@ -20,10 +20,12 @@ public class Application {
         ConfigurationLoaderService configurationLoaderService = new ConfigurationLoaderServiceImpl(CONFIG_PATH);
         ApplicationConfiguration applicationConfiguration = configurationLoaderService.loadConfigurationFromFile();
 
-        FeedUpdaterService feedUpdaterService = new FeedUpdaterServiceImpl(applicationConfiguration);
-        feedUpdaterService.startAllUpdates();
+        FeedUpdateSchedulerService feedUpdateSchedulerService =
+                new FeedUpdateSchedulerServiceImpl(applicationConfiguration);
+        feedUpdateSchedulerService.scheduleAllFeedUpdates();
 
-        ConsoleController consoleController = new ConsoleController(applicationConfiguration, feedUpdaterService);
+        ConsoleController consoleController =
+                new ConsoleController(applicationConfiguration, feedUpdateSchedulerService);
         consoleController.showWelcomeMessage();
 
         while (true) {
@@ -45,7 +47,7 @@ public class Application {
                     consoleController.removeFeed(scanner);
                     break;
                 case CLIConstants.EXIT_COMMAND:
-                    feedUpdaterService.shutdownUpdates();
+                    feedUpdateSchedulerService.shutdownUpdates();
                     configurationLoaderService.saveConfigurationToFile(applicationConfiguration);
                     return;
             }

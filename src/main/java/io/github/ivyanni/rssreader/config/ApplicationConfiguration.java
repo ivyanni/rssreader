@@ -5,6 +5,7 @@ import java.util.Map;
 
 /**
  * Main application configuration model.
+ *
  * @author Ilia Vianni on 23.02.2019.
  */
 public class ApplicationConfiguration {

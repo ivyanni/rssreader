@@ -12,12 +12,14 @@ import java.util.stream.Collectors;
 
 /**
  * Composes output string using received feed items and specified feed configuration.
+ *
  * @author Ilia Vianni on 24.02.2019.
  */
-public class OutputComposer {
+public class FeedOutputComposer {
 
     /**
      * Composes string output.
+     *
      * @param feedConfiguration Current feed's configuration
      * @param feed              Feed received by ROME
      * @return formatted output string
@@ -34,6 +36,7 @@ public class OutputComposer {
 
     /**
      * Filters out items that were already printed to file.
+     *
      * @param feedConfiguration Current feed's configuration
      * @param feed              Feed received by ROME
      * @return sorted collection with new entries
@@ -48,6 +51,7 @@ public class OutputComposer {
 
     /**
      * Leaves only first chunkSize entries.
+     *
      * @param entries   Collection of feed entries
      * @param chunkSize Chunk size specified in configuration
      * @return collection of entries with size <= specified chunk size
@@ -58,6 +62,7 @@ public class OutputComposer {
 
     /**
      * Creates string that contains specified attributes of feed entries
+     *
      * @param entries    Collection of feed entries
      * @param attributes List of feed parameters specified in configuration
      * @return formatted string

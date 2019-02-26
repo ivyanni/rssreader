@@ -2,8 +2,8 @@ package io.github.ivyanni.rssreader;
 
 import io.github.ivyanni.rssreader.config.ApplicationConfiguration;
 import io.github.ivyanni.rssreader.config.FeedConfiguration;
-import io.github.ivyanni.rssreader.service.FeedUpdaterService;
-import io.github.ivyanni.rssreader.service.impl.FeedUpdaterServiceImpl;
+import io.github.ivyanni.rssreader.service.FeedUpdateSchedulerService;
+import io.github.ivyanni.rssreader.service.impl.FeedUpdateSchedulerServiceImpl;
 import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -32,7 +32,7 @@ public class StubRssLoaderTest {
     private static final String RSS_STUB_FILENAME = "stub\\stub.rss";
     private static final String ATOM_STUB_FILENAME = "stub\\stub.atom";
     private static ApplicationConfiguration applicationConfiguration;
-    private static FeedUpdaterService feedUpdaterService;
+    private static FeedUpdateSchedulerService feedUpdateSchedulerService;
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
@@ -41,7 +41,7 @@ public class StubRssLoaderTest {
     public static void createStubAppConfiguration() {
         applicationConfiguration = new ApplicationConfiguration();
         applicationConfiguration.setCorePoolSize(2);
-        feedUpdaterService = new FeedUpdaterServiceImpl(applicationConfiguration);
+        feedUpdateSchedulerService = new FeedUpdateSchedulerServiceImpl(applicationConfiguration);
     }
 
     @AfterClass
@@ -62,7 +62,7 @@ public class StubRssLoaderTest {
 
     @Test
     public void testScheduleOneFeed() throws IOException, InterruptedException {
-        feedUpdaterService.scheduleFeedUpdate(createStubFeed(RSS_STUB_FILENAME));
+        feedUpdateSchedulerService.scheduleFeedUpdate(createStubFeed(RSS_STUB_FILENAME));
         Thread.sleep(2000);
         File file = new File(OUTPUT_FILENAME);
         assertTrue(file.exists());
@@ -74,8 +74,8 @@ public class StubRssLoaderTest {
 
     @Test
     public void testScheduleMultipleFeeds() throws IOException, InterruptedException {
-        feedUpdaterService.scheduleFeedUpdate(createStubFeed(RSS_STUB_FILENAME));
-        feedUpdaterService.scheduleFeedUpdate(createStubFeed(ATOM_STUB_FILENAME));
+        feedUpdateSchedulerService.scheduleFeedUpdate(createStubFeed(RSS_STUB_FILENAME));
+        feedUpdateSchedulerService.scheduleFeedUpdate(createStubFeed(ATOM_STUB_FILENAME));
         Thread.sleep(2000);
         File file = new File(OUTPUT_FILENAME);
         assertTrue(file.exists());
@@ -86,8 +86,9 @@ public class StubRssLoaderTest {
 
     @Test
     public void testScheduleIncorrectFeed() throws MalformedURLException, InterruptedException {
-        FeedConfiguration feedConfiguration = createStubFeed("http://incorrecturl-dgadfgadfg.ru/SDGSD.xml");
-        feedUpdaterService.scheduleFeedUpdate(feedConfiguration);
+        FeedConfiguration feedConfiguration =
+                createStubFeed("http://incorrecturl-dgadfgadfg.ru/SDGSD.xml");
+        feedUpdateSchedulerService.scheduleFeedUpdate(feedConfiguration);
         Thread.sleep(2000);
         File file = new File(OUTPUT_FILENAME);
         assertFalse(file.exists());

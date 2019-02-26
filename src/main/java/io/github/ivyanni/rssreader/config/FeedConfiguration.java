@@ -9,6 +9,7 @@ import java.util.concurrent.ScheduledFuture;
 
 /**
  * Feed's configuration model.
+ *
  * @author Ilia Vianni on 23.02.2019.
  */
 public class FeedConfiguration {

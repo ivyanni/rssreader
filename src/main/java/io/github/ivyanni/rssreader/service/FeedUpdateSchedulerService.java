@@ -4,18 +4,21 @@ import io.github.ivyanni.rssreader.config.FeedConfiguration;
 
 /**
  * Manages scheduling of feed updates.
+ *
  * @author Ilia Vianni on 23.02.2019.
  */
-public interface FeedUpdaterService {
+public interface FeedUpdateSchedulerService {
 
     /**
      * Adds specified feed to scheduler.
+     *
      * @param feedConfiguration Feed's configuration object
      */
     void scheduleFeedUpdate(FeedConfiguration feedConfiguration);
 
     /**
      * Reschedules feed's update with new delay.
+     *
      * @param feedName Feed's name
      * @param newDelay Feed's new delay
      */
@@ -23,6 +26,7 @@ public interface FeedUpdaterService {
 
     /**
      * Removes feed from scheduler.
+     *
      * @param feedName Feed's name
      */
     void stopFeedUpdate(String feedName);
@@ -30,7 +34,7 @@ public interface FeedUpdaterService {
     /**
      * Adds all existing in application's configuration feeds to scheduler.
      */
-    void startAllUpdates();
+    void scheduleAllFeedUpdates();
 
     /**
      * Removes all existing in application's configuration feeds from scheduler and shutdowns it.

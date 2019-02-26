@@ -13,12 +13,14 @@ import java.util.Set;
 
 /**
  * Contains methods that ask user to input value and validate it.
+ *
  * @author Ilia Vianni on 24.02.2019.
  */
 public class ConsoleInputUtils {
 
     /**
      * Asks user to input file name and validates it.
+     *
      * @param scanner User's input Scanner
      * @return String that contains valid file name
      */
@@ -31,7 +33,7 @@ public class ConsoleInputUtils {
             try {
                 file.createNewFile();
                 resultFilename = fileName;
-            } catch(IOException ex) {
+            } catch (IOException ex) {
                 System.out.println(CLIConstants.INCORRECT_FILENAME_MESSAGE);
             }
         }
@@ -40,6 +42,7 @@ public class ConsoleInputUtils {
 
     /**
      * Asks user to input number value and validates it.
+     *
      * @param scanner User's input Scanner
      * @param message Message that will be shown to user
      * @return valid Long value
@@ -65,6 +68,7 @@ public class ConsoleInputUtils {
 
     /**
      * Asks user to input feed's name and validates it.
+     *
      * @param scanner       User's input Scanner
      * @param existingNames Collection with existing names
      * @param unique        Shows should user enter unique name or existing
@@ -84,6 +88,7 @@ public class ConsoleInputUtils {
 
     /**
      * Asks user to input feed entry parameters and validates it.
+     *
      * @param scanner User's input Scanner
      * @return collection of selected parameters
      */
@@ -102,6 +107,7 @@ public class ConsoleInputUtils {
 
     /**
      * Asks user to input feed URL and validates it.
+     *
      * @param scanner User's input Scanner
      * @return valid feed's URL
      */

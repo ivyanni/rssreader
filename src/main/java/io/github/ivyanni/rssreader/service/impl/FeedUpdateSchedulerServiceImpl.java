@@ -2,8 +2,8 @@ package io.github.ivyanni.rssreader.service.impl;
 
 import io.github.ivyanni.rssreader.config.ApplicationConfiguration;
 import io.github.ivyanni.rssreader.config.FeedConfiguration;
-import io.github.ivyanni.rssreader.service.FeedUpdaterService;
-import io.github.ivyanni.rssreader.service.tasks.FeedProcessingTask;
+import io.github.ivyanni.rssreader.service.FeedUpdateSchedulerService;
+import io.github.ivyanni.rssreader.service.tasks.FeedUpdateTask;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -16,18 +16,18 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author Ilia Vianni on 23.02.2019.
  */
-public class FeedUpdaterServiceImpl implements FeedUpdaterService {
+public class FeedUpdateSchedulerServiceImpl implements FeedUpdateSchedulerService {
     private ApplicationConfiguration applicationConfiguration;
     private ScheduledExecutorService executor;
 
-    public FeedUpdaterServiceImpl(ApplicationConfiguration applicationConfiguration) {
+    public FeedUpdateSchedulerServiceImpl(ApplicationConfiguration applicationConfiguration) {
         this.applicationConfiguration = applicationConfiguration;
         this.executor = Executors.newScheduledThreadPool(applicationConfiguration.getCorePoolSize());
     }
 
     @Override
     public void scheduleFeedUpdate(FeedConfiguration feedConfiguration) {
-        ScheduledFuture future = executor.scheduleAtFixedRate(new FeedProcessingTask(feedConfiguration),
+        ScheduledFuture future = executor.scheduleAtFixedRate(new FeedUpdateTask(feedConfiguration),
                 0, feedConfiguration.getDelay(), TimeUnit.SECONDS);
         feedConfiguration.setSavedFuture(future);
     }
@@ -39,7 +39,7 @@ public class FeedUpdaterServiceImpl implements FeedUpdaterService {
         future.cancel(false);
         Date lastRequestTime = feedConfiguration.getLastRequestTime();
         Long initialDelay = calculateInitialDelay(lastRequestTime, newDelay);
-        future = executor.scheduleAtFixedRate(new FeedProcessingTask(feedConfiguration),
+        future = executor.scheduleAtFixedRate(new FeedUpdateTask(feedConfiguration),
                 initialDelay, newDelay, TimeUnit.SECONDS);
         feedConfiguration.setSavedFuture(future);
     }
@@ -51,12 +51,12 @@ public class FeedUpdaterServiceImpl implements FeedUpdaterService {
     }
 
     @Override
-    public void startAllUpdates() {
+    public void scheduleAllFeedUpdates() {
         applicationConfiguration.getFeedConfigurations().values().forEach(feedConfiguration -> {
             long delay = feedConfiguration.getDelay();
             Date lastRequestTime = feedConfiguration.getLastRequestTime();
             Long initialDelay = calculateInitialDelay(lastRequestTime, delay);
-            ScheduledFuture future = executor.scheduleAtFixedRate(new FeedProcessingTask(feedConfiguration),
+            ScheduledFuture future = executor.scheduleAtFixedRate(new FeedUpdateTask(feedConfiguration),
                     initialDelay, delay, TimeUnit.SECONDS);
             feedConfiguration.setSavedFuture(future);
         });

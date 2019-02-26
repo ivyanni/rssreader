@@ -3,7 +3,7 @@ package io.github.ivyanni.rssreader.controller;
 import io.github.ivyanni.rssreader.config.ApplicationConfiguration;
 import io.github.ivyanni.rssreader.config.FeedConfiguration;
 import io.github.ivyanni.rssreader.constants.CLIConstants;
-import io.github.ivyanni.rssreader.service.FeedUpdaterService;
+import io.github.ivyanni.rssreader.service.FeedUpdateSchedulerService;
 import io.github.ivyanni.rssreader.utils.ConsoleInputUtils;
 
 import java.net.URL;
@@ -13,20 +13,22 @@ import java.util.Set;
 
 /**
  * Manages CLI and interactions with user.
+ *
  * @author Ilia Vianni on 23.02.2019.
  */
 public class ConsoleController {
     private ApplicationConfiguration applicationConfiguration;
-    private FeedUpdaterService feedUpdaterService;
+    private FeedUpdateSchedulerService feedUpdateSchedulerService;
 
     public ConsoleController(ApplicationConfiguration applicationConfiguration,
-                             FeedUpdaterService feedUpdaterService) {
+                             FeedUpdateSchedulerService feedUpdateSchedulerService) {
         this.applicationConfiguration = applicationConfiguration;
-        this.feedUpdaterService = feedUpdaterService;
+        this.feedUpdateSchedulerService = feedUpdateSchedulerService;
     }
 
     /**
      * Manages interaction with user that leads to new feed subscription.
+     *
      * @param scanner User's input Scanner
      */
     public void addNewFeed(Scanner scanner) {
@@ -41,13 +43,14 @@ public class ConsoleController {
         feedConfiguration.setDelay(delay);
         feedConfiguration.setChunkSize(chunkSize);
         feedConfiguration.setOutputParams(selectedParams);
-        feedUpdaterService.scheduleFeedUpdate(feedConfiguration);
+        feedUpdateSchedulerService.scheduleFeedUpdate(feedConfiguration);
         applicationConfiguration.getFeedConfigurations().put(feedName, feedConfiguration);
         System.out.println(CLIConstants.FEED_ADDED_MESSAGE);
     }
 
     /**
      * Manages interaction that leads to modifications in existing feed subscription.
+     *
      * @param scanner User's input Scanner
      */
     public void changeExistingFeed(Scanner scanner) {
@@ -66,7 +69,7 @@ public class ConsoleController {
             case CLIConstants.CHANGE_DELAY_COMMAND:
                 Long delay = ConsoleInputUtils.inputNumber(scanner, CLIConstants.ENTER_DELAY_MESSAGE);
                 feedConfiguration.setDelay(delay);
-                feedUpdaterService.rescheduleFeedUpdate(feedName, delay);
+                feedUpdateSchedulerService.rescheduleFeedUpdate(feedName, delay);
                 break;
             case CLIConstants.CHANGE_CHUNK_SIZE_COMMAND:
                 Long chunkSize = ConsoleInputUtils.inputNumber(scanner, CLIConstants.ENTER_CHUNK_SIZE_MESSAGE);
@@ -85,12 +88,13 @@ public class ConsoleController {
 
     /**
      * Manages interaction that results to feed removal.
+     *
      * @param scanner User's input Scanner
      */
     public void removeFeed(Scanner scanner) {
         Set<String> existingNames = applicationConfiguration.getFeedConfigurations().keySet();
         String feedName = ConsoleInputUtils.inputFeedName(scanner, existingNames, false);
-        feedUpdaterService.stopFeedUpdate(feedName);
+        feedUpdateSchedulerService.stopFeedUpdate(feedName);
         applicationConfiguration.getFeedConfigurations().remove(feedName);
         System.out.println(CLIConstants.FEED_REMOVED_MESSAGE);
     }

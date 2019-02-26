@@ -10,6 +10,7 @@ import java.util.function.Function;
 
 /**
  * Contains mapping from ROME attribute name to function that returns string value for this attribute.
+ *
  * @author Ilia Vianni on 24.02.2019.
  */
 public class RomeAttributesMapper {
@@ -27,6 +28,7 @@ public class RomeAttributesMapper {
 
     /**
      * Returns string value by feed's entry and specified attribute.
+     *
      * @param entry     Feed's entry
      * @param attribute ROME attribute
      * @return the String value by defined feed's entry and attribute
@@ -43,6 +45,7 @@ public class RomeAttributesMapper {
 
     /**
      * Returns all attributes that available for user.
+     *
      * @return available attributes
      */
     public static Set<String> getAvailableAttributes() {

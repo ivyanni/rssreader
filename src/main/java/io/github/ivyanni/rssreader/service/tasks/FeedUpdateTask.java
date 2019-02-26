@@ -5,7 +5,7 @@ import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
 import io.github.ivyanni.rssreader.config.FeedConfiguration;
-import io.github.ivyanni.rssreader.service.composers.OutputComposer;
+import io.github.ivyanni.rssreader.service.composers.FeedOutputComposer;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,11 +20,11 @@ import java.util.Calendar;
  * Performs feed update and saves feed entries to file.
  * @author Ilia Vianni on 23.02.2019.
  */
-public class FeedProcessingTask implements Runnable {
-    private static final Logger LOGGER = LoggerFactory.getLogger(FeedProcessingTask.class);
+public class FeedUpdateTask implements Runnable {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FeedUpdateTask.class);
     private FeedConfiguration feedConfiguration;
 
-    public FeedProcessingTask(FeedConfiguration feedConfiguration) {
+    public FeedUpdateTask(FeedConfiguration feedConfiguration) {
         this.feedConfiguration = feedConfiguration;
     }
 
@@ -35,7 +35,7 @@ public class FeedProcessingTask implements Runnable {
     public void run() {
         try {
             SyndFeed feed = receiveFeed(feedConfiguration);
-            String content = new OutputComposer().compose(feedConfiguration, feed);
+            String content = new FeedOutputComposer().compose(feedConfiguration, feed);
             if (content.length() > 0) {
                 File file = new File(feedConfiguration.getOutputFilename());
                 saveContentToFile(file, content);
