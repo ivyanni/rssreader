@@ -12,10 +12,9 @@ public interface FeedUpdateService {
     /**
      * Add specified feed to scheduler.
      *
-     * @param feedName          the feed name
      * @param feedConfiguration the feed configuration
      */
-    void scheduleFeedUpdate(String feedName, FeedConfiguration feedConfiguration);
+    void scheduleFeedUpdate(FeedConfiguration feedConfiguration);
 
     /**
      * Reschedule feed update with new timeout.

@@ -26,7 +26,7 @@ public class FeedUpdateServiceImpl implements FeedUpdateService {
     }
 
     @Override
-    public void scheduleFeedUpdate(String feedName, FeedConfiguration feedConfiguration) {
+    public void scheduleFeedUpdate(FeedConfiguration feedConfiguration) {
         ScheduledFuture future = executor.scheduleAtFixedRate(new FeedRetrieverTask(feedConfiguration), 0, feedConfiguration.getTimeout(), TimeUnit.SECONDS);
         feedConfiguration.setScheduledFuture(future);
     }

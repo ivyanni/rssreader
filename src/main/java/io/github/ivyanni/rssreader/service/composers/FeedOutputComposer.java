@@ -27,7 +27,9 @@ public class FeedOutputComposer {
     public String compose(FeedConfiguration feedConfiguration, SyndFeed feed) {
         List<SyndEntry> actualEntries = getActualEntries(feedConfiguration, feed);
         actualEntries = getFirstEntries(actualEntries, feedConfiguration.getItemsAmount());
-        Date lastSavedMessageDate = actualEntries.get(actualEntries.size() - 1).getPublishedDate();
+        Date lastSavedMessageDate =  actualEntries.size() > 0 ?
+                actualEntries.get(actualEntries.size() - 1).getPublishedDate() :
+                feedConfiguration.getLastSavedMessageDate();
         feedConfiguration.setLastSavedMessageDate(lastSavedMessageDate);
         return createStringByAttributes(actualEntries, feedConfiguration.getParams());
     }
@@ -55,7 +57,6 @@ public class FeedOutputComposer {
                         .append(RomeAttributesHolder.getValueByAttribute(entry, attr))
                         .append(System.getProperty("line.separator"));
             });
-            str.append("-----").append(System.getProperty("line.separator"));
         });
         return str.toString();
     }

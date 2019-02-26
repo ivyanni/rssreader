@@ -50,7 +50,7 @@ public class ConsoleController {
         feedConfiguration.setFilename(fileName);
         feedConfiguration.setItemsAmount(amount);
         feedConfiguration.setParams(selectedParams);
-        feedUpdateService.scheduleFeedUpdate(feedName, feedConfiguration);
+        feedUpdateService.scheduleFeedUpdate(feedConfiguration);
         applicationConfiguration.getFeedConfigurations().put(feedName, feedConfiguration);
         System.out.println(CLIConstants.FEED_ADDED_MESSAGE);
     }

@@ -14,22 +14,17 @@ import java.util.function.Function;
  * @author Ilia Vianni on 24.02.2019.
  */
 public class RomeAttributesHolder {
-    private static Map<String, Function<SyndEntry, String>> attributeToFunctionMap = new HashMap<>();
-
-    /**
-     * Fill map with predefined parameters.
-     */
-    public static void fillAttributesMap() {
-        attributeToFunctionMap.put("title", SyndEntry::getTitle);
-        attributeToFunctionMap.put("author", SyndEntry::getAuthor);
-        attributeToFunctionMap.put("publishedDate", entry -> entry.getPublishedDate() != null ? entry.getPublishedDate().toString() : null);
-        attributeToFunctionMap.put("updatedDate", entry -> entry.getUpdatedDate() != null ? entry.getUpdatedDate().toString() : null);
-        attributeToFunctionMap.put("description", entry -> entry.getDescription() != null ? entry.getDescription().getValue() : null);
-        attributeToFunctionMap.put("content", entry -> entry.getContents().stream().map(SyndContent::getValue).reduce("", String::concat));
-        attributeToFunctionMap.put("uri", SyndEntry::getUri);
-        attributeToFunctionMap.put("link", SyndEntry::getLink);
-        attributeToFunctionMap.put("comments", SyndEntry::getComments);
-    }
+    private static Map<String, Function<SyndEntry, String>> attributeToFunctionMap = new HashMap<>() {{
+        put("title", SyndEntry::getTitle);
+        put("author", SyndEntry::getAuthor);
+        put("publishedDate", entry -> entry.getPublishedDate() != null ? entry.getPublishedDate().toString() : null);
+        put("updatedDate", entry -> entry.getUpdatedDate() != null ? entry.getUpdatedDate().toString() : null);
+        put("description", entry -> entry.getDescription() != null ? entry.getDescription().getValue() : null);
+        put("content", entry -> entry.getContents().stream().map(SyndContent::getValue).reduce("", String::concat));
+        put("uri", SyndEntry::getUri);
+        put("link", SyndEntry::getLink);
+        put("comments", SyndEntry::getComments);
+    }};
 
     /**
      * Gets string value by feed's entry and specified attribute.
