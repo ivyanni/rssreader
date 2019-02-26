@@ -15,18 +15,19 @@ import java.io.IOException;
  */
 public class ConfigurationLoaderServiceImpl implements ConfigurationLoaderService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationLoaderServiceImpl.class);
-    private static final String APP_CONFIG_PATH = "D:\\appconfig.json";
     private ObjectMapper objectMapper;
+    private String configFileName;
 
-    public ConfigurationLoaderServiceImpl() {
-        objectMapper = new ObjectMapper();
-        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+    public ConfigurationLoaderServiceImpl(String configFileName) {
+        this.configFileName = configFileName;
+        this.objectMapper = new ObjectMapper();
+        this.objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
     }
 
     @Override
     public ApplicationConfiguration loadConfigurationFromFile() {
         ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
-        File appConfigFile = new File(APP_CONFIG_PATH);
+        File appConfigFile = new File(configFileName);
         try {
             if (appConfigFile.exists()) {
                 applicationConfiguration = objectMapper.readValue(appConfigFile, ApplicationConfiguration.class);
@@ -42,7 +43,7 @@ public class ConfigurationLoaderServiceImpl implements ConfigurationLoaderServic
     @Override
     public void saveConfigurationToFile(ApplicationConfiguration applicationConfiguration) {
         try {
-            objectMapper.writeValue(new File(APP_CONFIG_PATH), applicationConfiguration);
+            objectMapper.writeValue(new File(configFileName), applicationConfiguration);
         } catch (IOException ex) {
             LOGGER.error("Exception was occurred while saving configuration file: {}", ex.getMessage(), ex);
         }

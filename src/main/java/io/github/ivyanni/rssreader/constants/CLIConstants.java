@@ -30,7 +30,6 @@ public class CLIConstants {
     public static final String CHANGE_FEED_PARAMS_COMMAND = "modify";
     public static final String REMOVE_FEED_COMMAND = "remove";
     public static final String SHOW_EXISTING_FEEDS_COMMAND = "list";
-    public static final String HELP_COMMAND = "help";
     public static final String EXIT_COMMAND = "exit";
     public static final String CHANGE_URL_COMMAND = "url";
     public static final String CHANGE_AMOUNT_COMMAND = "chunk";

@@ -17,7 +17,7 @@ public class Application {
 
     public static void main(String[] args) {
         RomeAttributesHolder.fillAttributesMap();
-        ConfigurationLoaderService configurationLoaderService = new ConfigurationLoaderServiceImpl();
+        ConfigurationLoaderService configurationLoaderService = new ConfigurationLoaderServiceImpl("D:\\appconfig.json");
         ApplicationConfiguration applicationConfiguration = configurationLoaderService.loadConfigurationFromFile();
 
         FeedUpdateService feedUpdateService = new FeedUpdateServiceImpl(applicationConfiguration);

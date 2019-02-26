@@ -25,20 +25,26 @@ public class FeedOutputComposer {
      * @return output string
      */
     public String compose(FeedConfiguration feedConfiguration, SyndFeed feed) {
-        List<SyndEntry> selectedEntries = feed.getEntries().stream()
+        List<SyndEntry> actualEntries = getActualEntries(feedConfiguration, feed);
+        actualEntries = getFirstEntries(actualEntries, feedConfiguration.getItemsAmount());
+        Date lastSavedMessageDate = actualEntries.get(actualEntries.size() - 1).getPublishedDate();
+        feedConfiguration.setLastSavedMessageDate(lastSavedMessageDate);
+        return createStringByAttributes(actualEntries, feedConfiguration.getParams());
+    }
+
+    private List<SyndEntry> getActualEntries(FeedConfiguration feedConfiguration, SyndFeed feed) {
+        return feed.getEntries().stream()
                 .filter(entry -> feedConfiguration.getLastSavedMessageDate() == null ||
                         entry.getPublishedDate().after(feedConfiguration.getLastSavedMessageDate()))
                 .sorted(Comparator.comparing(SyndEntry::getPublishedDate))
                 .collect(Collectors.toList());
+    }
 
-        if(selectedEntries.size() > feedConfiguration.getItemsAmount()) {
-            selectedEntries = selectedEntries.subList(0, feedConfiguration.getItemsAmount().intValue());
+    private List<SyndEntry> getFirstEntries(List<SyndEntry> entries, Long amount) {
+        if (entries.size() > amount) {
+            entries = entries.subList(0, amount.intValue());
         }
-
-        Date lastSavedMessageDate = selectedEntries.get(selectedEntries.size() - 1).getPublishedDate();
-        feedConfiguration.setLastSavedMessageDate(lastSavedMessageDate);
-
-        return createStringByAttributes(selectedEntries, feedConfiguration.getParams());
+        return entries;
     }
 
     private String createStringByAttributes(List<SyndEntry> selectedEntries, List<String> attributes) {

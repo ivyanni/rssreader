@@ -3,7 +3,7 @@ package io.github.ivyanni.rssreader.service.impl;
 import io.github.ivyanni.rssreader.config.ApplicationConfiguration;
 import io.github.ivyanni.rssreader.config.FeedConfiguration;
 import io.github.ivyanni.rssreader.service.FeedUpdateService;
-import io.github.ivyanni.rssreader.service.tasks.RetrieveFeedTask;
+import io.github.ivyanni.rssreader.service.tasks.FeedRetrieverTask;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -27,7 +27,7 @@ public class FeedUpdateServiceImpl implements FeedUpdateService {
 
     @Override
     public void scheduleFeedUpdate(String feedName, FeedConfiguration feedConfiguration) {
-        ScheduledFuture future = executor.scheduleAtFixedRate(new RetrieveFeedTask(feedConfiguration), 0, feedConfiguration.getTimeout(), TimeUnit.SECONDS);
+        ScheduledFuture future = executor.scheduleAtFixedRate(new FeedRetrieverTask(feedConfiguration), 0, feedConfiguration.getTimeout(), TimeUnit.SECONDS);
         feedConfiguration.setScheduledFuture(future);
     }
 
@@ -38,12 +38,12 @@ public class FeedUpdateServiceImpl implements FeedUpdateService {
         future.cancel(false);
         Date lastRequestTime = feedConfiguration.getLastRequestTime();
         Long initialDelay = calculateInitialDelay(lastRequestTime, newTimeout);
-        future = executor.scheduleAtFixedRate(new RetrieveFeedTask(feedConfiguration), initialDelay, newTimeout, TimeUnit.SECONDS);
+        future = executor.scheduleAtFixedRate(new FeedRetrieverTask(feedConfiguration), initialDelay, newTimeout, TimeUnit.SECONDS);
         feedConfiguration.setScheduledFuture(future);
     }
 
     @Override
-    public void removeFeed(String feedName) {
+    public void stopFeedUpdate(String feedName) {
         FeedConfiguration feedConfiguration = applicationConfiguration.getFeedConfigurations().get(feedName);
         feedConfiguration.getScheduledFuture().cancel(true);
     }
@@ -54,7 +54,7 @@ public class FeedUpdateServiceImpl implements FeedUpdateService {
             long timeout = feedConfiguration.getTimeout();
             Date lastRequestTime = feedConfiguration.getLastRequestTime();
             Long initialDelay = calculateInitialDelay(lastRequestTime, timeout);
-            ScheduledFuture future = executor.scheduleAtFixedRate(new RetrieveFeedTask(feedConfiguration), initialDelay, timeout, TimeUnit.SECONDS);
+            ScheduledFuture future = executor.scheduleAtFixedRate(new FeedRetrieverTask(feedConfiguration), initialDelay, timeout, TimeUnit.SECONDS);
             feedConfiguration.setScheduledFuture(future);
         });
     }

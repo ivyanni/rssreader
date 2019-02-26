@@ -1,17 +1,13 @@
 package io.github.ivyanni.rssreader.controller;
 
-import io.github.ivyanni.rssreader.RomeAttributesHolder;
 import io.github.ivyanni.rssreader.config.ApplicationConfiguration;
 import io.github.ivyanni.rssreader.config.FeedConfiguration;
 import io.github.ivyanni.rssreader.constants.CLIConstants;
 import io.github.ivyanni.rssreader.service.FeedUpdateService;
+import io.github.ivyanni.rssreader.utils.ConsoleInputUtils;
 
-import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -41,12 +37,13 @@ public class ConsoleController {
      * @param scanner the scanner
      */
     public void addNewFeed(Scanner scanner) {
-        String feedName = inputFeedName(scanner, true);
-        URL feedUrl = inputFeedUrl(scanner);
-        Long timeout = inputNumber(scanner, CLIConstants.ENTER_TIMEOUT_MESSAGE);
-        Long amount = inputNumber(scanner, CLIConstants.ENTER_AMOUNT_MESSAGE);
-        String fileName = inputFilename(scanner);
-        List<String> selectedParams = inputParameters(scanner);
+        Set<String> existingNames = applicationConfiguration.getFeedConfigurations().keySet();
+        String feedName = ConsoleInputUtils.inputFeedName(scanner, existingNames, true);
+        URL feedUrl = ConsoleInputUtils.inputFeedUrl(scanner);
+        Long timeout = ConsoleInputUtils.inputNumber(scanner, CLIConstants.ENTER_TIMEOUT_MESSAGE);
+        Long amount = ConsoleInputUtils.inputNumber(scanner, CLIConstants.ENTER_AMOUNT_MESSAGE);
+        String fileName = ConsoleInputUtils.inputFilename(scanner);
+        List<String> selectedParams = ConsoleInputUtils.inputParameters(scanner);
         FeedConfiguration feedConfiguration = new FeedConfiguration();
         feedConfiguration.setFeedUrl(feedUrl);
         feedConfiguration.setTimeout(timeout);
@@ -64,31 +61,32 @@ public class ConsoleController {
      * @param scanner the scanner
      */
     public void changeExistingFeed(Scanner scanner) {
-        String feedName = inputFeedName(scanner, false);
+        Set<String> existingNames = applicationConfiguration.getFeedConfigurations().keySet();
+        String feedName = ConsoleInputUtils.inputFeedName(scanner, existingNames, false);
         FeedConfiguration feedConfiguration = applicationConfiguration.getFeedConfigurations().get(feedName);
         System.out.print(CLIConstants.ENTER_COMMAND_MODIFY_MESSAGE);
         String command = scanner.nextLine();
         switch (command) {
             case CLIConstants.CHANGE_URL_COMMAND:
-                URL feedUrl = inputFeedUrl(scanner);
+                URL feedUrl = ConsoleInputUtils.inputFeedUrl(scanner);
                 feedConfiguration.setFeedUrl(feedUrl);
                 feedConfiguration.setLastSavedMessageDate(null);
                 break;
             case CLIConstants.CHANGE_TIMEOUT_COMMAND:
-                Long timeout = inputNumber(scanner, CLIConstants.ENTER_TIMEOUT_MESSAGE);
+                Long timeout = ConsoleInputUtils.inputNumber(scanner, CLIConstants.ENTER_TIMEOUT_MESSAGE);
                 feedConfiguration.setTimeout(timeout);
                 feedUpdateService.rescheduleFeedUpdate(feedName, timeout);
                 break;
             case CLIConstants.CHANGE_AMOUNT_COMMAND:
-                Long amount = inputNumber(scanner, CLIConstants.ENTER_AMOUNT_MESSAGE);
+                Long amount = ConsoleInputUtils.inputNumber(scanner, CLIConstants.ENTER_AMOUNT_MESSAGE);
                 feedConfiguration.setItemsAmount(amount);
                 break;
             case CLIConstants.CHANGE_FILENAME_COMMAND:
-                String filename = inputFilename(scanner);
+                String filename = ConsoleInputUtils.inputFilename(scanner);
                 feedConfiguration.setFilename(filename);
                 break;
             case CLIConstants.CHANGE_PARAMETERS_COMMAND:
-                List<String> params = inputParameters(scanner);
+                List<String> params = ConsoleInputUtils.inputParameters(scanner);
                 feedConfiguration.setParams(params);
                 break;
         }
@@ -100,8 +98,9 @@ public class ConsoleController {
      * @param scanner the scanner
      */
     public void removeFeed(Scanner scanner) {
-        String feedName = inputFeedName(scanner, false);
-        feedUpdateService.removeFeed(feedName);
+        Set<String> existingNames = applicationConfiguration.getFeedConfigurations().keySet();
+        String feedName = ConsoleInputUtils.inputFeedName(scanner, existingNames, false);
+        feedUpdateService.stopFeedUpdate(feedName);
         applicationConfiguration.getFeedConfigurations().remove(feedName);
         System.out.println(CLIConstants.FEED_REMOVED_MESSAGE);
     }
@@ -138,77 +137,5 @@ public class ConsoleController {
         System.out.println(CLIConstants.WELCOME_MESSAGE);
         System.out.println("---------------------");
         System.out.println(" ");
-    }
-
-    private String inputFilename(Scanner scanner) {
-        String resultFilename = null;
-        while (resultFilename == null) {
-            System.out.print(CLIConstants.ENTER_FILENAME_MESSAGE);
-            String fileName = scanner.nextLine();
-            File file = new File(fileName);
-            if (!file.canRead() && !file.canWrite() && !file.isFile()) {
-                resultFilename = fileName;
-            }
-        }
-        return resultFilename;
-    }
-
-    private Long inputNumber(Scanner scanner, String message) {
-        Long resultTimeout = null;
-        while (resultTimeout == null) {
-            System.out.print(message);
-            String timeoutStr = scanner.nextLine();
-            try {
-                Long timeout = Long.parseLong(timeoutStr);
-                if (timeout > 0) {
-                    resultTimeout = timeout;
-                } else {
-                    System.out.println(CLIConstants.INCORRECT_NUMBER_MESSAGE);
-                }
-            } catch (NumberFormatException ex) {
-                System.out.println(CLIConstants.INCORRECT_NUMBER_MESSAGE);
-            }
-        }
-        return resultTimeout;
-    }
-
-    private String inputFeedName(Scanner scanner, boolean unique) {
-        String resultName = null;
-        while (resultName == null) {
-            System.out.print(CLIConstants.ENTER_FEED_NAME_MESSAGE);
-            String feedName = scanner.nextLine();
-            Map<String, FeedConfiguration> feedConfigurations = applicationConfiguration.getFeedConfigurations();
-            if (unique == feedConfigurations.containsKey(feedName)) {
-                System.out.println(CLIConstants.INCORRECT_FEEDNAME_MESSAGE);
-            } else resultName = feedName;
-        }
-        return resultName;
-    }
-
-    private List<String> inputParameters(Scanner scanner) {
-        Set<String> allowedParams = RomeAttributesHolder.getAllowedParameters();
-        System.out.println(CLIConstants.ALLOWED_PARAMETERS_MESSAGE + String.join(", ", allowedParams));
-        System.out.print(CLIConstants.ENTER_PARAMETERS_MESSAGE);
-        String paramLine = scanner.nextLine();
-        if (paramLine.isEmpty()) {
-            return List.copyOf(allowedParams);
-        } else {
-            paramLine = paramLine.replaceAll("\\s*", "");
-            return Arrays.asList(paramLine.split("\\s*,\\s*"));
-        }
-    }
-
-    private URL inputFeedUrl(Scanner scanner) {
-        URL feedUrl = null;
-        while (feedUrl == null) {
-            System.out.print(CLIConstants.ENTER_CORRECT_URL_MESSAGE);
-            String enteredUrl = scanner.nextLine();
-            try {
-                feedUrl = new URL(enteredUrl);
-            } catch (MalformedURLException ex) {
-                System.out.println(CLIConstants.INCORRECT_URL_ENTERED_MESSAGE);
-            }
-        }
-        return feedUrl;
     }
 }

@@ -30,7 +30,7 @@ public interface FeedUpdateService {
      *
      * @param feedName the feed name
      */
-    void removeFeed(String feedName);
+    void stopFeedUpdate(String feedName);
 
     /**
      * Add all existing feeds to scheduler.

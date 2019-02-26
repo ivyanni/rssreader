@@ -17,13 +17,20 @@ import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 
 /**
+ * Performs feed update and writes it to file.
+ *
  * @author Ilia Vianni on 23.02.2019.
  */
-public class RetrieveFeedTask implements Runnable {
-    private static final Logger LOGGER = LoggerFactory.getLogger(RetrieveFeedTask.class);
+public class FeedRetrieverTask implements Runnable {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FeedRetrieverTask.class);
     private FeedConfiguration feedConfiguration;
 
-    public RetrieveFeedTask(FeedConfiguration feedConfiguration) {
+    /**
+     * Instantiates a new Feed Retriever.
+     *
+     * @param feedConfiguration the feed configuration
+     */
+    public FeedRetrieverTask(FeedConfiguration feedConfiguration) {
         this.feedConfiguration = feedConfiguration;
     }
 

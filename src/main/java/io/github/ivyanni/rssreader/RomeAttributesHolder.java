@@ -41,7 +41,7 @@ public class RomeAttributesHolder {
     public static synchronized String getValueByAttribute(SyndEntry entry, String attribute) {
         if (attributeToFunctionMap.containsKey(attribute)) {
             String value = attributeToFunctionMap.get(attribute).apply(entry);
-            if(value != null) {
+            if (value != null) {
                 return value;
             }
         }
@@ -49,11 +49,11 @@ public class RomeAttributesHolder {
     }
 
     /**
-     * Gets all parameters that user is allowed to select.
+     * Gets all attributes available for user.
      *
-     * @return Set that contains allowed parameters
+     * @return Set that contains available attributes
      */
-    public static Set<String> getAllowedParameters() {
+    public static Set<String> getAvailableAttributes() {
         return attributeToFunctionMap.keySet();
     }
 }
