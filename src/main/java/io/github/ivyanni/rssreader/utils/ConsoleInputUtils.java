@@ -1,9 +1,9 @@
 package io.github.ivyanni.rssreader.utils;
 
-import io.github.ivyanni.rssreader.RomeAttributesHolder;
 import io.github.ivyanni.rssreader.constants.CLIConstants;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
@@ -22,22 +22,25 @@ public class ConsoleInputUtils {
             System.out.print(CLIConstants.ENTER_FILENAME_MESSAGE);
             String fileName = scanner.nextLine();
             File file = new File(fileName);
-            if (!file.canRead() && !file.canWrite() && !file.isFile()) {
+            try {
+                file.createNewFile();
                 resultFilename = fileName;
+            } catch(IOException ex) {
+                System.out.println(CLIConstants.INCORRECT_FILENAME_MESSAGE);
             }
         }
         return resultFilename;
     }
 
     public static Long inputNumber(Scanner scanner, String message) {
-        Long resultTimeout = null;
-        while (resultTimeout == null) {
+        Long resultNumber = null;
+        while (resultNumber == null) {
             System.out.print(message);
-            String timeoutStr = scanner.nextLine();
+            String numberStr = scanner.nextLine();
             try {
-                Long timeout = Long.parseLong(timeoutStr);
-                if (timeout > 0) {
-                    resultTimeout = timeout;
+                Long number = Long.parseLong(numberStr);
+                if (number > 0) {
+                    resultNumber = number;
                 } else {
                     System.out.println(CLIConstants.INCORRECT_NUMBER_MESSAGE);
                 }
@@ -45,7 +48,7 @@ public class ConsoleInputUtils {
                 System.out.println(CLIConstants.INCORRECT_NUMBER_MESSAGE);
             }
         }
-        return resultTimeout;
+        return resultNumber;
     }
 
     public static String inputFeedName(Scanner scanner, Set<String> existingNames, boolean unique) {
@@ -61,7 +64,7 @@ public class ConsoleInputUtils {
     }
 
     public static List<String> inputParameters(Scanner scanner) {
-        Set<String> allowedParams = RomeAttributesHolder.getAvailableAttributes();
+        Set<String> allowedParams = RomeAttributesMapper.getAvailableAttributes();
         System.out.println(CLIConstants.ALLOWED_PARAMETERS_MESSAGE + String.join(", ", allowedParams));
         System.out.print(CLIConstants.ENTER_PARAMETERS_MESSAGE);
         String paramLine = scanner.nextLine();

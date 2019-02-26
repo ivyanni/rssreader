@@ -1,0 +1,23 @@
+{
+  "corePoolSize" : 2,
+  "feedConfigurations" : {
+    "yandex" : {
+      "delay" : 30,
+      "outputFilename" : "output.txt",
+      "chunkSize" : 2,
+      "sourceUrl" : "https://news.yandex.ru/incident.rss",
+      "outputParams" : [ "title", "publishedDate" ],
+      "lastRequestTime" : null,
+      "lastMessageTime" : null
+    },
+	"yandex2" : {
+      "delay" : 30,
+      "outputFilename" : "output.txt",
+      "chunkSize" : 2,
+      "sourceUrl" : "https://news.yandex.ru/movies.rss",
+      "outputParams" : [ "title", "publishedDate" ],
+      "lastRequestTime" : null,
+      "lastMessageTime" : null
+    }
+  }
+}

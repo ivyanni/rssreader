@@ -35,7 +35,7 @@ public class ConfigurationLoaderServiceImpl implements ConfigurationLoaderServic
                 appConfigFile.createNewFile();
             }
         } catch (IOException ex) {
-            LOGGER.error("Exception was occurred while retrieving configuration file: {}", ex.getMessage(), ex);
+            LOGGER.warn("Exception was occurred while retrieving configuration file: {}", ex.getMessage(), ex);
         }
         return applicationConfiguration;
     }

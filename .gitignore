@@ -4,3 +4,6 @@
 
 # Compiled classes
 target
+
+# Logs
+*.log

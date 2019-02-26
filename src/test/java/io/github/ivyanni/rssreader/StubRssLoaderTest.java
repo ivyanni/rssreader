@@ -2,9 +2,10 @@ package io.github.ivyanni.rssreader;
 
 import io.github.ivyanni.rssreader.config.ApplicationConfiguration;
 import io.github.ivyanni.rssreader.config.FeedConfiguration;
-import io.github.ivyanni.rssreader.service.FeedUpdateService;
-import io.github.ivyanni.rssreader.service.impl.FeedUpdateServiceImpl;
+import io.github.ivyanni.rssreader.service.FeedUpdaterService;
+import io.github.ivyanni.rssreader.service.impl.FeedUpdaterServiceImpl;
 import org.apache.commons.io.FileUtils;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -27,11 +28,11 @@ import static org.junit.Assert.assertTrue;
  * @author Ilia Vianni on 26.02.2019.
  */
 public class StubRssLoaderTest {
+    private static final String OUTPUT_FILENAME = "stub\\output.txt";
+    private static final String RSS_STUB_FILENAME = "stub\\stub.rss";
+    private static final String ATOM_STUB_FILENAME = "stub\\stub.atom";
     private static ApplicationConfiguration applicationConfiguration;
-    private static FeedUpdateService feedUpdateService;
-    private String fileName = "D:\\file.txt";
-    private String stubRssName = "file:\\\\\\D:\\rss.xml";
-    private String stubSecondRssName = "file:\\\\\\D:\\rss2.xml";
+    private static FeedUpdaterService feedUpdaterService;
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
@@ -40,25 +41,30 @@ public class StubRssLoaderTest {
     public static void createStubAppConfiguration() {
         applicationConfiguration = new ApplicationConfiguration();
         applicationConfiguration.setCorePoolSize(2);
-        feedUpdateService = new FeedUpdateServiceImpl(applicationConfiguration);
+        feedUpdaterService = new FeedUpdaterServiceImpl(applicationConfiguration);
+    }
+
+    @AfterClass
+    public static void deleteFile() {
+        new File(OUTPUT_FILENAME).delete();
     }
 
     @Before
     public void removeAllFeeds() {
         applicationConfiguration.getFeedConfigurations().values().forEach(config -> {
-            if(config.getScheduledFuture() != null) {
-                config.getScheduledFuture().cancel(true);
+            if (config.getSavedFuture() != null) {
+                config.getSavedFuture().cancel(true);
             }
         });
         applicationConfiguration.getFeedConfigurations().clear();
-        new File(fileName).delete();
+        new File(OUTPUT_FILENAME).delete();
     }
 
     @Test
     public void testScheduleOneFeed() throws IOException, InterruptedException {
-        feedUpdateService.scheduleFeedUpdate(createStubFeed(new URL(stubRssName), 2L));
+        feedUpdaterService.scheduleFeedUpdate(createStubFeed(RSS_STUB_FILENAME));
         Thread.sleep(2000);
-        File file = new File(fileName);
+        File file = new File(OUTPUT_FILENAME);
         assertTrue(file.exists());
 
         List<String> strings = FileUtils.readLines(file, StandardCharsets.UTF_8);
@@ -68,10 +74,10 @@ public class StubRssLoaderTest {
 
     @Test
     public void testScheduleMultipleFeeds() throws IOException, InterruptedException {
-        feedUpdateService.scheduleFeedUpdate(createStubFeed(new URL(stubRssName), 2L));
-        feedUpdateService.scheduleFeedUpdate(createStubFeed(new URL(stubSecondRssName), 3L));
+        feedUpdaterService.scheduleFeedUpdate(createStubFeed(RSS_STUB_FILENAME));
+        feedUpdaterService.scheduleFeedUpdate(createStubFeed(ATOM_STUB_FILENAME));
         Thread.sleep(2000);
-        File file = new File(fileName);
+        File file = new File(OUTPUT_FILENAME);
         assertTrue(file.exists());
 
         List<String> strings = FileUtils.readLines(file, StandardCharsets.UTF_8);
@@ -80,20 +86,19 @@ public class StubRssLoaderTest {
 
     @Test
     public void testScheduleIncorrectFeed() throws MalformedURLException, InterruptedException {
-        FeedConfiguration feedConfiguration = createStubFeed(new URL("http://dgadfgadfg.ru/SDGSD.xml"), 2L);
-        feedUpdateService.scheduleFeedUpdate(feedConfiguration);
+        FeedConfiguration feedConfiguration = createStubFeed("http://incorrecturl-dgadfgadfg.ru/SDGSD.xml");
+        feedUpdaterService.scheduleFeedUpdate(feedConfiguration);
         Thread.sleep(2000);
-        File file = new File(fileName);
+        File file = new File(OUTPUT_FILENAME);
         assertFalse(file.exists());
     }
 
-    private FeedConfiguration createStubFeed(URL feedUrl, Long amount) {
-        FeedConfiguration feedConfiguration = new FeedConfiguration();
-        feedConfiguration.setItemsAmount(amount);
-        feedConfiguration.setTimeout(4L);
-        feedConfiguration.setParams(List.of("title"));
-        feedConfiguration.setFeedUrl(feedUrl);
-        feedConfiguration.setFilename(fileName);
+    private FeedConfiguration createStubFeed(String feedUrlString) throws MalformedURLException {
+        URL feedUrl = new File(feedUrlString).toURI().toURL();
+        FeedConfiguration feedConfiguration = new FeedConfiguration(feedUrl, OUTPUT_FILENAME);
+        feedConfiguration.setChunkSize(100L);
+        feedConfiguration.setDelay(4L);
+        feedConfiguration.setOutputParams(List.of("title"));
         applicationConfiguration.getFeedConfigurations().put(new Random().toString(), feedConfiguration);
         return feedConfiguration;
     }

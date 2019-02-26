@@ -2,8 +2,8 @@ package io.github.ivyanni.rssreader.service.composers;
 
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
-import io.github.ivyanni.rssreader.RomeAttributesHolder;
 import io.github.ivyanni.rssreader.config.FeedConfiguration;
+import io.github.ivyanni.rssreader.utils.RomeAttributesMapper;
 
 import java.util.Comparator;
 import java.util.Date;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  *
  * @author Ilia Vianni on 24.02.2019.
  */
-public class FeedOutputComposer {
+public class OutputComposer {
 
     /**
      * Compose string output using feed and actual configuration.
@@ -26,38 +26,35 @@ public class FeedOutputComposer {
      */
     public String compose(FeedConfiguration feedConfiguration, SyndFeed feed) {
         List<SyndEntry> actualEntries = getActualEntries(feedConfiguration, feed);
-        actualEntries = getFirstEntries(actualEntries, feedConfiguration.getItemsAmount());
-        Date lastSavedMessageDate =  actualEntries.size() > 0 ?
+        actualEntries = getFirstEntries(actualEntries, feedConfiguration.getChunkSize());
+        Date lastSavedMessageDate = actualEntries.size() > 0 ?
                 actualEntries.get(actualEntries.size() - 1).getPublishedDate() :
-                feedConfiguration.getLastSavedMessageDate();
-        feedConfiguration.setLastSavedMessageDate(lastSavedMessageDate);
-        return createStringByAttributes(actualEntries, feedConfiguration.getParams());
+                feedConfiguration.getLastMessageTime();
+        feedConfiguration.setLastMessageTime(lastSavedMessageDate);
+        return createStringByAttributes(actualEntries, feedConfiguration.getOutputParams());
     }
 
     private List<SyndEntry> getActualEntries(FeedConfiguration feedConfiguration, SyndFeed feed) {
         return feed.getEntries().stream()
-                .filter(entry -> feedConfiguration.getLastSavedMessageDate() == null ||
-                        entry.getPublishedDate().after(feedConfiguration.getLastSavedMessageDate()))
+                .filter(entry -> feedConfiguration.getLastMessageTime() == null ||
+                        entry.getPublishedDate().after(feedConfiguration.getLastMessageTime()))
                 .sorted(Comparator.comparing(SyndEntry::getPublishedDate))
                 .collect(Collectors.toList());
     }
 
-    private List<SyndEntry> getFirstEntries(List<SyndEntry> entries, Long amount) {
-        if (entries.size() > amount) {
-            entries = entries.subList(0, amount.intValue());
-        }
-        return entries;
+    private List<SyndEntry> getFirstEntries(List<SyndEntry> entries, Long chunkSize) {
+        return entries.size() > chunkSize ? entries.subList(0, chunkSize.intValue()) : entries;
     }
 
     private String createStringByAttributes(List<SyndEntry> selectedEntries, List<String> attributes) {
-        StringBuilder str = new StringBuilder();
+        StringBuilder outputSb = new StringBuilder();
         selectedEntries.forEach(entry -> {
             attributes.forEach(attr -> {
-                str.append(attr).append(": ")
-                        .append(RomeAttributesHolder.getValueByAttribute(entry, attr))
+                outputSb.append(attr).append(": ")
+                        .append(RomeAttributesMapper.getValueByAttribute(entry, attr))
                         .append(System.getProperty("line.separator"));
             });
         });
-        return str.toString();
+        return outputSb.toString();
     }
 }

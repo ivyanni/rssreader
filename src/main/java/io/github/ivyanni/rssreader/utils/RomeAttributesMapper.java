@@ -1,4 +1,4 @@
-package io.github.ivyanni.rssreader;
+package io.github.ivyanni.rssreader.utils;
 
 import com.rometools.rome.feed.synd.SyndContent;
 import com.rometools.rome.feed.synd.SyndEntry;
@@ -13,8 +13,8 @@ import java.util.function.Function;
  *
  * @author Ilia Vianni on 24.02.2019.
  */
-public class RomeAttributesHolder {
-    private static Map<String, Function<SyndEntry, String>> attributeToFunctionMap = new HashMap<>() {{
+public class RomeAttributesMapper {
+    private static final Map<String, Function<SyndEntry, String>> ATTR_TO_FUNCTION_MAP = new HashMap<>() {{
         put("title", SyndEntry::getTitle);
         put("author", SyndEntry::getAuthor);
         put("publishedDate", entry -> entry.getPublishedDate() != null ? entry.getPublishedDate().toString() : null);
@@ -34,8 +34,8 @@ public class RomeAttributesHolder {
      * @return the String value by defined feed's entry and attribute
      */
     public static synchronized String getValueByAttribute(SyndEntry entry, String attribute) {
-        if (attributeToFunctionMap.containsKey(attribute)) {
-            String value = attributeToFunctionMap.get(attribute).apply(entry);
+        if (ATTR_TO_FUNCTION_MAP.containsKey(attribute)) {
+            String value = ATTR_TO_FUNCTION_MAP.get(attribute).apply(entry);
             if (value != null) {
                 return value;
             }
@@ -49,6 +49,6 @@ public class RomeAttributesHolder {
      * @return Set that contains available attributes
      */
     public static Set<String> getAvailableAttributes() {
-        return attributeToFunctionMap.keySet();
+        return ATTR_TO_FUNCTION_MAP.keySet();
     }
 }

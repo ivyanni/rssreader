@@ -10,7 +10,12 @@ import java.util.Map;
  */
 public class ApplicationConfiguration {
     private Integer corePoolSize;
-    private Map<String, FeedConfiguration> feedConfigurations = new HashMap<>();
+    private Map<String, FeedConfiguration> feedConfigurations;
+
+    public ApplicationConfiguration() {
+        this.corePoolSize = 4;
+        this.feedConfigurations = new HashMap<>();
+    }
 
     public Integer getCorePoolSize() {
         return corePoolSize;

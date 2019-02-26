@@ -13,54 +13,62 @@ import java.util.concurrent.ScheduledFuture;
  * @author Ilia Vianni on 23.02.2019.
  */
 public class FeedConfiguration {
-    private Long timeout;
-    private String filename;
-    private Long itemsAmount;
-    private URL feedUrl;
-    private List<String> params;
+    private Long delay;
+    private String outputFilename;
+    private Long chunkSize;
+    private URL sourceUrl;
+    private List<String> outputParams;
     private Date lastRequestTime;
-    private Date lastSavedMessageDate;
+    private Date lastMessageTime;
     @JsonIgnore
-    private ScheduledFuture scheduledFuture;
+    private ScheduledFuture savedFuture;
 
-    public Long getTimeout() {
-        return timeout;
+    public FeedConfiguration() {
     }
 
-    public void setTimeout(Long timeout) {
-        this.timeout = timeout;
+    public FeedConfiguration(URL sourceUrl, String outputFilename) {
+        this.sourceUrl = sourceUrl;
+        this.outputFilename = outputFilename;
     }
 
-    public String getFilename() {
-        return filename;
+    public Long getDelay() {
+        return delay;
     }
 
-    public void setFilename(String filename) {
-        this.filename = filename;
+    public void setDelay(Long delay) {
+        this.delay = delay;
     }
 
-    public Long getItemsAmount() {
-        return itemsAmount;
+    public String getOutputFilename() {
+        return outputFilename;
     }
 
-    public void setItemsAmount(Long itemsAmount) {
-        this.itemsAmount = itemsAmount;
+    public void setOutputFilename(String outputFilename) {
+        this.outputFilename = outputFilename;
     }
 
-    public URL getFeedUrl() {
-        return feedUrl;
+    public Long getChunkSize() {
+        return chunkSize;
     }
 
-    public void setFeedUrl(URL feedUrl) {
-        this.feedUrl = feedUrl;
+    public void setChunkSize(Long chunkSize) {
+        this.chunkSize = chunkSize;
     }
 
-    public List<String> getParams() {
-        return params;
+    public URL getSourceUrl() {
+        return sourceUrl;
     }
 
-    public void setParams(List<String> params) {
-        this.params = params;
+    public void setSourceUrl(URL sourceUrl) {
+        this.sourceUrl = sourceUrl;
+    }
+
+    public List<String> getOutputParams() {
+        return outputParams;
+    }
+
+    public void setOutputParams(List<String> outputParams) {
+        this.outputParams = outputParams;
     }
 
     public Date getLastRequestTime() {
@@ -71,19 +79,19 @@ public class FeedConfiguration {
         this.lastRequestTime = lastRequestTime;
     }
 
-    public ScheduledFuture getScheduledFuture() {
-        return scheduledFuture;
+    public ScheduledFuture getSavedFuture() {
+        return savedFuture;
     }
 
-    public void setScheduledFuture(ScheduledFuture scheduledFuture) {
-        this.scheduledFuture = scheduledFuture;
+    public void setSavedFuture(ScheduledFuture savedFuture) {
+        this.savedFuture = savedFuture;
     }
 
-    public Date getLastSavedMessageDate() {
-        return lastSavedMessageDate;
+    public Date getLastMessageTime() {
+        return lastMessageTime;
     }
 
-    public void setLastSavedMessageDate(Date lastSavedMessageDate) {
-        this.lastSavedMessageDate = lastSavedMessageDate;
+    public void setLastMessageTime(Date lastMessageTime) {
+        this.lastMessageTime = lastMessageTime;
     }
 }

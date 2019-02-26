@@ -7,7 +7,7 @@ import io.github.ivyanni.rssreader.config.FeedConfiguration;
  *
  * @author Ilia Vianni on 23.02.2019.
  */
-public interface FeedUpdateService {
+public interface FeedUpdaterService {
 
     /**
      * Add specified feed to scheduler.
@@ -20,9 +20,9 @@ public interface FeedUpdateService {
      * Reschedule feed update with new timeout.
      *
      * @param feedName   the feed name
-     * @param newTimeout the new timeout
+     * @param newDelay the new timeout
      */
-    void rescheduleFeedUpdate(String feedName, Long newTimeout);
+    void rescheduleFeedUpdate(String feedName, Long newDelay);
 
     /**
      * Remove feed from scheduler.

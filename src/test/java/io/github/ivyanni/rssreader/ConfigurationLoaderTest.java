@@ -17,14 +17,14 @@ import static org.junit.Assert.assertTrue;
  * @author Ilia Vianni on 26.02.2019.
  */
 public class ConfigurationLoaderTest {
+    private static final String STUB_CONFIG_PATH = "stub\\stubconfig.json";
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
     @Test
     public void testLoadConfig() {
-        String existingConfig = "D:\\stubconfig.json";
-        ConfigurationLoaderService configurationLoaderService = new ConfigurationLoaderServiceImpl(existingConfig);
+        ConfigurationLoaderService configurationLoaderService = new ConfigurationLoaderServiceImpl(STUB_CONFIG_PATH);
         ApplicationConfiguration applicationConfiguration = configurationLoaderService.loadConfigurationFromFile();
         assertNotNull(applicationConfiguration);
         assertEquals(Integer.valueOf(2), applicationConfiguration.getCorePoolSize());
@@ -33,12 +33,12 @@ public class ConfigurationLoaderTest {
 
     @Test
     public void testSaveConfig() {
-        String newConfig = "D:\\stubconfig2.json";
+        String newConfigName = "stub\\stubconfig2.json";
         ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
         applicationConfiguration.setCorePoolSize(2);
-        ConfigurationLoaderService configurationLoaderService = new ConfigurationLoaderServiceImpl(newConfig);
+        ConfigurationLoaderService configurationLoaderService = new ConfigurationLoaderServiceImpl(newConfigName);
         configurationLoaderService.saveConfigurationToFile(applicationConfiguration);
-        File file = new File(newConfig);
+        File file = new File(newConfigName);
         assertTrue(file.exists());
         file.delete();
     }

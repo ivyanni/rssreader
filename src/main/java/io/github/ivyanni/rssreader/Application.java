@@ -4,9 +4,9 @@ import io.github.ivyanni.rssreader.config.ApplicationConfiguration;
 import io.github.ivyanni.rssreader.constants.CLIConstants;
 import io.github.ivyanni.rssreader.controller.ConsoleController;
 import io.github.ivyanni.rssreader.service.ConfigurationLoaderService;
-import io.github.ivyanni.rssreader.service.FeedUpdateService;
+import io.github.ivyanni.rssreader.service.FeedUpdaterService;
 import io.github.ivyanni.rssreader.service.impl.ConfigurationLoaderServiceImpl;
-import io.github.ivyanni.rssreader.service.impl.FeedUpdateServiceImpl;
+import io.github.ivyanni.rssreader.service.impl.FeedUpdaterServiceImpl;
 
 import java.util.Scanner;
 
@@ -14,15 +14,16 @@ import java.util.Scanner;
  * @author Ilia Vianni on 23.02.2019.
  */
 public class Application {
+    private static final String CONFIG_PATH = "config.json";
 
     public static void main(String[] args) {
-        ConfigurationLoaderService configurationLoaderService = new ConfigurationLoaderServiceImpl("D:\\appconfig.json");
+        ConfigurationLoaderService configurationLoaderService = new ConfigurationLoaderServiceImpl(CONFIG_PATH);
         ApplicationConfiguration applicationConfiguration = configurationLoaderService.loadConfigurationFromFile();
 
-        FeedUpdateService feedUpdateService = new FeedUpdateServiceImpl(applicationConfiguration);
-        feedUpdateService.startService();
+        FeedUpdaterService feedUpdaterService = new FeedUpdaterServiceImpl(applicationConfiguration);
+        feedUpdaterService.startService();
 
-        ConsoleController consoleController = new ConsoleController(applicationConfiguration, feedUpdateService);
+        ConsoleController consoleController = new ConsoleController(applicationConfiguration, feedUpdaterService);
 
         consoleController.showWelcomeMessage();
 
@@ -45,7 +46,7 @@ public class Application {
                     consoleController.removeFeed(scanner);
                     break;
                 case CLIConstants.EXIT_COMMAND:
-                    consoleController.exit(scanner);
+                    consoleController.exit();
                     configurationLoaderService.saveConfigurationToFile(applicationConfiguration);
                     return;
             }

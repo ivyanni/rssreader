@@ -5,7 +5,7 @@ import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
 import io.github.ivyanni.rssreader.config.FeedConfiguration;
-import io.github.ivyanni.rssreader.service.composers.FeedOutputComposer;
+import io.github.ivyanni.rssreader.service.composers.OutputComposer;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,8 +21,8 @@ import java.util.Calendar;
  *
  * @author Ilia Vianni on 23.02.2019.
  */
-public class FeedRetrieverTask implements Runnable {
-    private static final Logger LOGGER = LoggerFactory.getLogger(FeedRetrieverTask.class);
+public class FeedProcessingTask implements Runnable {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FeedProcessingTask.class);
     private FeedConfiguration feedConfiguration;
 
     /**
@@ -30,18 +30,18 @@ public class FeedRetrieverTask implements Runnable {
      *
      * @param feedConfiguration the feed configuration
      */
-    public FeedRetrieverTask(FeedConfiguration feedConfiguration) {
+    public FeedProcessingTask(FeedConfiguration feedConfiguration) {
         this.feedConfiguration = feedConfiguration;
     }
 
     @Override
     public void run() {
         try {
-            SyndFeed feed = retrieveFeed(feedConfiguration);
-            String outputString = new FeedOutputComposer().compose(feedConfiguration, feed);
-            if (outputString.length() > 0) {
-                File file = new File(feedConfiguration.getFilename());
-                saveToFile(file, outputString);
+            SyndFeed feed = receiveFeed(feedConfiguration);
+            String content = new OutputComposer().compose(feedConfiguration, feed);
+            if (content.length() > 0) {
+                File file = new File(feedConfiguration.getOutputFilename());
+                saveContentToFile(file, content);
             }
         } catch (FeedException ex) {
             LOGGER.error("Exception was occurred while parsing feed data: {}", ex.getMessage(), ex);
@@ -52,13 +52,13 @@ public class FeedRetrieverTask implements Runnable {
         }
     }
 
-    private SyndFeed retrieveFeed(FeedConfiguration feedConfiguration) throws FeedException, IOException {
+    private SyndFeed receiveFeed(FeedConfiguration feedConfiguration) throws FeedException, IOException {
         feedConfiguration.setLastRequestTime(Calendar.getInstance().getTime());
         SyndFeedInput input = new SyndFeedInput();
-        return input.build(new XmlReader(feedConfiguration.getFeedUrl()));
+        return input.build(new XmlReader(feedConfiguration.getSourceUrl()));
     }
 
-    private synchronized void saveToFile(File file, String str) throws IOException {
+    private synchronized void saveContentToFile(File file, String str) throws IOException {
         if (!file.exists()) {
             file.createNewFile();
         }
