@@ -9,8 +9,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 /**
- * Holder that contains mapping from ROME attribute to function returning string value.
- *
+ * Contains mapping from ROME attribute name to function that returns string value for this attribute.
  * @author Ilia Vianni on 24.02.2019.
  */
 public class RomeAttributesMapper {
@@ -27,9 +26,8 @@ public class RomeAttributesMapper {
     }};
 
     /**
-     * Gets string value by feed's entry and specified attribute.
-     *
-     * @param entry     feed's entry
+     * Returns string value by feed's entry and specified attribute.
+     * @param entry     Feed's entry
      * @param attribute ROME attribute
      * @return the String value by defined feed's entry and attribute
      */
@@ -44,9 +42,8 @@ public class RomeAttributesMapper {
     }
 
     /**
-     * Gets all attributes available for user.
-     *
-     * @return Set that contains available attributes
+     * Returns all attributes that available for user.
+     * @return available attributes
      */
     public static Set<String> getAvailableAttributes() {
         return ATTR_TO_FUNCTION_MAP.keySet();

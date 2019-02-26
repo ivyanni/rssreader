@@ -12,10 +12,16 @@ import java.util.Scanner;
 import java.util.Set;
 
 /**
+ * Contains methods that ask user to input value and validate it.
  * @author Ilia Vianni on 24.02.2019.
  */
 public class ConsoleInputUtils {
 
+    /**
+     * Asks user to input file name and validates it.
+     * @param scanner User's input Scanner
+     * @return String that contains valid file name
+     */
     public static String inputFilename(Scanner scanner) {
         String resultFilename = null;
         while (resultFilename == null) {
@@ -32,6 +38,12 @@ public class ConsoleInputUtils {
         return resultFilename;
     }
 
+    /**
+     * Asks user to input number value and validates it.
+     * @param scanner User's input Scanner
+     * @param message Message that will be shown to user
+     * @return valid Long value
+     */
     public static Long inputNumber(Scanner scanner, String message) {
         Long resultNumber = null;
         while (resultNumber == null) {
@@ -51,6 +63,13 @@ public class ConsoleInputUtils {
         return resultNumber;
     }
 
+    /**
+     * Asks user to input feed's name and validates it.
+     * @param scanner       User's input Scanner
+     * @param existingNames Collection with existing names
+     * @param unique        Shows should user enter unique name or existing
+     * @return valid unique/existing feed's name
+     */
     public static String inputFeedName(Scanner scanner, Set<String> existingNames, boolean unique) {
         String resultName = null;
         while (resultName == null) {
@@ -63,6 +82,11 @@ public class ConsoleInputUtils {
         return resultName;
     }
 
+    /**
+     * Asks user to input feed entry parameters and validates it.
+     * @param scanner User's input Scanner
+     * @return collection of selected parameters
+     */
     public static List<String> inputParameters(Scanner scanner) {
         Set<String> allowedParams = RomeAttributesMapper.getAvailableAttributes();
         System.out.println(CLIConstants.ALLOWED_PARAMETERS_MESSAGE + String.join(", ", allowedParams));
@@ -76,6 +100,11 @@ public class ConsoleInputUtils {
         }
     }
 
+    /**
+     * Asks user to input feed URL and validates it.
+     * @param scanner User's input Scanner
+     * @return valid feed's URL
+     */
     public static URL inputFeedUrl(Scanner scanner) {
         URL feedUrl = null;
         while (feedUrl == null) {

@@ -51,7 +51,7 @@ public class FeedUpdaterServiceImpl implements FeedUpdaterService {
     }
 
     @Override
-    public void startService() {
+    public void startAllUpdates() {
         applicationConfiguration.getFeedConfigurations().values().forEach(feedConfiguration -> {
             long delay = feedConfiguration.getDelay();
             Date lastRequestTime = feedConfiguration.getLastRequestTime();
@@ -63,7 +63,7 @@ public class FeedUpdaterServiceImpl implements FeedUpdaterService {
     }
 
     @Override
-    public void stopService() {
+    public void shutdownUpdates() {
         executor.shutdown();
     }
 

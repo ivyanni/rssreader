@@ -1,8 +1,7 @@
 package io.github.ivyanni.rssreader.constants;
 
 /**
- * Constant strings for Command Line Interface
- *
+ * Constants used in Command Line Interface.
  * @author Ilia Vianni on 24.02.2019.
  */
 public class CLIConstants {

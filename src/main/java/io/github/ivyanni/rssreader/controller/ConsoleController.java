@@ -12,20 +12,13 @@ import java.util.Scanner;
 import java.util.Set;
 
 /**
- * Controller that manages CLI and interaction with user.
- *
+ * Manages CLI and interactions with user.
  * @author Ilia Vianni on 23.02.2019.
  */
 public class ConsoleController {
     private ApplicationConfiguration applicationConfiguration;
     private FeedUpdaterService feedUpdaterService;
 
-    /**
-     * Instantiates a new Console controller.
-     *
-     * @param applicationConfiguration the application configuration
-     * @param feedUpdaterService       the feed update service
-     */
     public ConsoleController(ApplicationConfiguration applicationConfiguration,
                              FeedUpdaterService feedUpdaterService) {
         this.applicationConfiguration = applicationConfiguration;
@@ -33,9 +26,8 @@ public class ConsoleController {
     }
 
     /**
-     * Starts dialog with user that leads to new feed creation.
-     *
-     * @param scanner the scanner
+     * Manages interaction with user that leads to new feed subscription.
+     * @param scanner User's input Scanner
      */
     public void addNewFeed(Scanner scanner) {
         Set<String> existingNames = applicationConfiguration.getFeedConfigurations().keySet();
@@ -55,9 +47,8 @@ public class ConsoleController {
     }
 
     /**
-     * Starts dialog that leads to modifications in existing feed.
-     *
-     * @param scanner the scanner
+     * Manages interaction that leads to modifications in existing feed subscription.
+     * @param scanner User's input Scanner
      */
     public void changeExistingFeed(Scanner scanner) {
         Set<String> existingNames = applicationConfiguration.getFeedConfigurations().keySet();
@@ -93,9 +84,8 @@ public class ConsoleController {
     }
 
     /**
-     * Starts dialog that results to feed removal.
-     *
-     * @param scanner the scanner
+     * Manages interaction that results to feed removal.
+     * @param scanner User's input Scanner
      */
     public void removeFeed(Scanner scanner) {
         Set<String> existingNames = applicationConfiguration.getFeedConfigurations().keySet();
@@ -103,13 +93,6 @@ public class ConsoleController {
         feedUpdaterService.stopFeedUpdate(feedName);
         applicationConfiguration.getFeedConfigurations().remove(feedName);
         System.out.println(CLIConstants.FEED_REMOVED_MESSAGE);
-    }
-
-    /**
-     * Shutdowns existing services.
-     */
-    public void exit() {
-        feedUpdaterService.stopService();
     }
 
     /**

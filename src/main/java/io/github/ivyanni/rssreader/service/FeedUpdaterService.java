@@ -3,41 +3,37 @@ package io.github.ivyanni.rssreader.service;
 import io.github.ivyanni.rssreader.config.FeedConfiguration;
 
 /**
- * Service that manages feed updates in background thread.
- *
+ * Manages scheduling of feed updates.
  * @author Ilia Vianni on 23.02.2019.
  */
 public interface FeedUpdaterService {
 
     /**
-     * Add specified feed to scheduler.
-     *
-     * @param feedConfiguration the feed configuration
+     * Adds specified feed to scheduler.
+     * @param feedConfiguration Feed's configuration object
      */
     void scheduleFeedUpdate(FeedConfiguration feedConfiguration);
 
     /**
-     * Reschedule feed update with new timeout.
-     *
-     * @param feedName   the feed name
-     * @param newDelay the new timeout
+     * Reschedules feed's update with new delay.
+     * @param feedName Feed's name
+     * @param newDelay Feed's new delay
      */
     void rescheduleFeedUpdate(String feedName, Long newDelay);
 
     /**
-     * Remove feed from scheduler.
-     *
-     * @param feedName the feed name
+     * Removes feed from scheduler.
+     * @param feedName Feed's name
      */
     void stopFeedUpdate(String feedName);
 
     /**
-     * Add all existing feeds to scheduler.
+     * Adds all existing in application's configuration feeds to scheduler.
      */
-    void startService();
+    void startAllUpdates();
 
     /**
-     * Remove all existing feeds from scheduler and shutdown it.
+     * Removes all existing in application's configuration feeds from scheduler and shutdowns it.
      */
-    void stopService();
+    void shutdownUpdates();
 }

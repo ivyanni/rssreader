@@ -21,10 +21,9 @@ public class Application {
         ApplicationConfiguration applicationConfiguration = configurationLoaderService.loadConfigurationFromFile();
 
         FeedUpdaterService feedUpdaterService = new FeedUpdaterServiceImpl(applicationConfiguration);
-        feedUpdaterService.startService();
+        feedUpdaterService.startAllUpdates();
 
         ConsoleController consoleController = new ConsoleController(applicationConfiguration, feedUpdaterService);
-
         consoleController.showWelcomeMessage();
 
         while (true) {
@@ -46,7 +45,7 @@ public class Application {
                     consoleController.removeFeed(scanner);
                     break;
                 case CLIConstants.EXIT_COMMAND:
-                    consoleController.exit();
+                    feedUpdaterService.shutdownUpdates();
                     configurationLoaderService.saveConfigurationToFile(applicationConfiguration);
                     return;
             }
