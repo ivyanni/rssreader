@@ -1,14 +1,9 @@
 package io.github.ivyanni.rssreader;
 
 import io.github.ivyanni.rssreader.config.ApplicationConfiguration;
-import io.github.ivyanni.rssreader.constants.CLIConstants;
-import io.github.ivyanni.rssreader.controller.ConsoleController;
+import io.github.ivyanni.rssreader.controller.CommandLineController;
 import io.github.ivyanni.rssreader.service.ConfigurationLoaderService;
-import io.github.ivyanni.rssreader.service.FeedUpdateSchedulerService;
 import io.github.ivyanni.rssreader.service.impl.ConfigurationLoaderServiceImpl;
-import io.github.ivyanni.rssreader.service.impl.FeedUpdateSchedulerServiceImpl;
-
-import java.util.Scanner;
 
 /**
  * @author Ilia Vianni on 23.02.2019.
@@ -20,37 +15,11 @@ public class Application {
         ConfigurationLoaderService configurationLoaderService = new ConfigurationLoaderServiceImpl(CONFIG_PATH);
         ApplicationConfiguration applicationConfiguration = configurationLoaderService.loadConfigurationFromFile();
 
-        FeedUpdateSchedulerService feedUpdateSchedulerService =
-                new FeedUpdateSchedulerServiceImpl(applicationConfiguration);
-        feedUpdateSchedulerService.scheduleAllFeedUpdates();
+        CommandLineController commandLineController =
+                new CommandLineController(applicationConfiguration);
 
-        ConsoleController consoleController =
-                new ConsoleController(applicationConfiguration, feedUpdateSchedulerService);
-        consoleController.showWelcomeMessage();
+        commandLineController.startMainInteraction();
 
-        while (true) {
-            System.out.print(CLIConstants.ENTER_COMMAND_MESSAGE);
-            Scanner scanner = new Scanner(System.in);
-            String command = scanner.nextLine();
-            command = command.toLowerCase();
-            switch (command) {
-                case CLIConstants.ADD_NEW_FEED_COMMAND:
-                    consoleController.addNewFeed(scanner);
-                    break;
-                case CLIConstants.SHOW_EXISTING_FEEDS_COMMAND:
-                    consoleController.listExistingFeed();
-                    break;
-                case CLIConstants.CHANGE_FEED_PARAMS_COMMAND:
-                    consoleController.changeExistingFeed(scanner);
-                    break;
-                case CLIConstants.REMOVE_FEED_COMMAND:
-                    consoleController.removeFeed(scanner);
-                    break;
-                case CLIConstants.EXIT_COMMAND:
-                    feedUpdateSchedulerService.shutdownUpdates();
-                    configurationLoaderService.saveConfigurationToFile(applicationConfiguration);
-                    return;
-            }
-        }
+        configurationLoaderService.saveConfigurationToFile(applicationConfiguration);
     }
 }

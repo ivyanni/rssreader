@@ -3,7 +3,6 @@ package io.github.ivyanni.rssreader.utils;
 import io.github.ivyanni.rssreader.constants.CLIConstants;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
@@ -16,7 +15,7 @@ import java.util.Set;
  *
  * @author Ilia Vianni on 24.02.2019.
  */
-public class ConsoleInputUtils {
+public class CommandLineInputUtils {
 
     /**
      * Asks user to input file name and validates it.
@@ -24,17 +23,20 @@ public class ConsoleInputUtils {
      * @param scanner User's input Scanner
      * @return String that contains valid file name
      */
-    public static String inputFilename(Scanner scanner) {
+    public static String inputFilename(Scanner scanner, URL feedUrl) {
         String resultFilename = null;
         while (resultFilename == null) {
             System.out.print(CLIConstants.ENTER_FILENAME_MESSAGE);
             String fileName = scanner.nextLine();
-            File file = new File(fileName);
-            try {
-                file.createNewFile();
-                resultFilename = fileName;
-            } catch (IOException ex) {
+            if (fileName.isBlank()) {
+                int divider = feedUrl.toString().lastIndexOf('/');
+                fileName = feedUrl.toString().substring(divider);
+            }
+            File file = new File("output\\" + fileName + ".out");
+            if (fileName.contains("/") || fileName.contains("\\") || !file.isFile()) {
                 System.out.println(CLIConstants.INCORRECT_FILENAME_MESSAGE);
+            } else {
+                resultFilename = "output\\" + fileName + ".out";
             }
         }
         return resultFilename;

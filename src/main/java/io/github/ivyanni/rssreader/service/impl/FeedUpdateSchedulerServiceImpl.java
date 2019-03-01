@@ -27,8 +27,9 @@ public class FeedUpdateSchedulerServiceImpl implements FeedUpdateSchedulerServic
 
     @Override
     public void scheduleFeedUpdate(FeedConfiguration feedConfiguration) {
+        Long delay = feedConfiguration.getDelay();
         ScheduledFuture future = executor.scheduleAtFixedRate(new FeedUpdateTask(feedConfiguration),
-                0, feedConfiguration.getDelay(), TimeUnit.SECONDS);
+                delay, delay, TimeUnit.SECONDS);
         feedConfiguration.setSavedFuture(future);
     }
 

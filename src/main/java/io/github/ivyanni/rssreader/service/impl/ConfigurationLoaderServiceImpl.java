@@ -22,6 +22,7 @@ public class ConfigurationLoaderServiceImpl implements ConfigurationLoaderServic
         this.configFileName = configFileName;
         this.objectMapper = new ObjectMapper();
         this.objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+        this.objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 
     @Override

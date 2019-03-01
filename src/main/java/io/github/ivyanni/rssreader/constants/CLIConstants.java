@@ -13,7 +13,7 @@ public class CLIConstants {
     public static final String ENTER_CORRECT_URL_MESSAGE = "Enter correct source URL: ";
     public static final String ENTER_DELAY_MESSAGE = "Enter delay (sec): ";
     public static final String ENTER_CHUNK_SIZE_MESSAGE = "Enter chunk size: ";
-    public static final String ENTER_FILENAME_MESSAGE = "Enter output file name: ";
+    public static final String ENTER_FILENAME_MESSAGE = "Enter output file name  (or leave empty for default): ";
     public static final String INCORRECT_URL_ENTERED_MESSAGE = "Specified incorrect URL";
     public static final String EXISTING_FEEDS_MESSAGE = "Existing feeds:";
     public static final String NO_EXISTING_FEEDS_MESSAGE = "No existing feeds";
@@ -25,6 +25,7 @@ public class CLIConstants {
     public static final String ENTER_PARAMETERS_MESSAGE = "Specify parameters (separated by comma): ";
     public static final String INCORRECT_NUMBER_MESSAGE = "Specified number is incorrect";
     public static final String INCORRECT_FILENAME_MESSAGE = "Incorrect file name";
+    public static final String INCORRECT_FEED_MESSAGE = "Provided incorrect feed";
 
     /* Console commands */
     public static final String ADD_NEW_FEED_COMMAND = "add";

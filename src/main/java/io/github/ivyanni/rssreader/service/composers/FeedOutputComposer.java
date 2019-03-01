@@ -5,8 +5,9 @@ import com.rometools.rome.feed.synd.SyndFeed;
 import io.github.ivyanni.rssreader.config.FeedConfiguration;
 import io.github.ivyanni.rssreader.utils.RomeAttributesMapper;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,13 +25,10 @@ public class FeedOutputComposer {
      * @param feed              Feed received by ROME
      * @return formatted output string
      */
-    public String compose(FeedConfiguration feedConfiguration, SyndFeed feed) {
+    public List<String> compose(FeedConfiguration feedConfiguration, SyndFeed feed) {
         List<SyndEntry> recentEntries = getRecentEntries(feedConfiguration, feed);
         recentEntries = getFirstEntries(recentEntries, feedConfiguration.getChunkSize());
-        Date lastSavedMessageDate = recentEntries.size() > 0 ?
-                recentEntries.get(recentEntries.size() - 1).getPublishedDate() :
-                feedConfiguration.getLastMessageTime();
-        feedConfiguration.setLastMessageTime(lastSavedMessageDate);
+        feedConfiguration.setLastRequestTime(Calendar.getInstance().getTime());
         return createStringByAttributes(recentEntries, feedConfiguration.getOutputParams());
     }
 
@@ -43,8 +41,8 @@ public class FeedOutputComposer {
      */
     private List<SyndEntry> getRecentEntries(FeedConfiguration feedConfiguration, SyndFeed feed) {
         return feed.getEntries().stream()
-                .filter(entry -> feedConfiguration.getLastMessageTime() == null ||
-                        entry.getPublishedDate().after(feedConfiguration.getLastMessageTime()))
+                .filter(entry -> feedConfiguration.getLastRequestTime() != null &&
+                        entry.getPublishedDate().after(feedConfiguration.getLastRequestTime()))
                 .sorted(Comparator.comparing(SyndEntry::getPublishedDate))
                 .collect(Collectors.toList());
     }
@@ -67,7 +65,8 @@ public class FeedOutputComposer {
      * @param attributes List of feed parameters specified in configuration
      * @return formatted string
      */
-    private String createStringByAttributes(List<SyndEntry> entries, List<String> attributes) {
+    private List<String> createStringByAttributes(List<SyndEntry> entries, List<String> attributes) {
+        List<String> stringList = new ArrayList<>();
         StringBuilder outputSb = new StringBuilder();
         entries.forEach(entry -> {
             attributes.forEach(attr -> {
@@ -75,7 +74,9 @@ public class FeedOutputComposer {
                         .append(RomeAttributesMapper.getValueByAttribute(entry, attr))
                         .append(System.getProperty("line.separator"));
             });
+            stringList.add(outputSb.toString());
+            outputSb.setLength(0);
         });
-        return outputSb.toString();
+        return stringList;
     }
 }

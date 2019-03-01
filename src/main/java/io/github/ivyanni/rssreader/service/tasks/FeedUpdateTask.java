@@ -14,14 +14,16 @@ import java.io.File;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
-import java.util.Calendar;
+import java.util.List;
 
 /**
  * Performs feed update and saves feed entries to file.
+ *
  * @author Ilia Vianni on 23.02.2019.
  */
 public class FeedUpdateTask implements Runnable {
     private static final Logger LOGGER = LoggerFactory.getLogger(FeedUpdateTask.class);
+    private FeedOutputComposer feedOutputComposer = new FeedOutputComposer();
     private FeedConfiguration feedConfiguration;
 
     public FeedUpdateTask(FeedConfiguration feedConfiguration) {
@@ -34,11 +36,17 @@ public class FeedUpdateTask implements Runnable {
     @Override
     public void run() {
         try {
-            SyndFeed feed = receiveFeed(feedConfiguration);
-            String content = new FeedOutputComposer().compose(feedConfiguration, feed);
-            if (content.length() > 0) {
+            SyndFeed feed = new SyndFeedInput().build(new XmlReader(feedConfiguration.getSourceUrl()));
+            List<String> content = feedOutputComposer.compose(feedConfiguration, feed);
+            if (content.size() > 0) {
                 File file = new File(feedConfiguration.getOutputFilename());
-                saveContentToFile(file, content);
+                if (!file.exists()) {
+                    file.getParentFile().mkdirs();
+                    file.createNewFile();
+                }
+                for (String string : content) {
+                    saveStringToFile(file, string);
+                }
             }
         } catch (FeedException ex) {
             LOGGER.error("Exception was occurred while parsing feed data: {}", ex.getMessage(), ex);
@@ -50,28 +58,13 @@ public class FeedUpdateTask implements Runnable {
     }
 
     /**
-     * Receives feed by specified configuration using ROME.
-     * @param feedConfiguration Feed configuration object
-     * @return ROME feed object
-     * @throws FeedException when ROME couldn't parse feed
-     * @throws IOException when ROME couldn't receive feed from specified URL
-     */
-    private SyndFeed receiveFeed(FeedConfiguration feedConfiguration) throws FeedException, IOException {
-        feedConfiguration.setLastRequestTime(Calendar.getInstance().getTime());
-        SyndFeedInput input = new SyndFeedInput();
-        return input.build(new XmlReader(feedConfiguration.getSourceUrl()));
-    }
-
-    /**
      * Saves formatted entries string to specified file.
+     *
      * @param file    File which will be used to save data
      * @param content Formatted feed entries string
      * @throws IOException when it couldn't append content to specified file
      */
-    private synchronized void saveContentToFile(File file, String content) throws IOException {
-        if (!file.exists()) {
-            file.createNewFile();
-        }
+    private synchronized void saveStringToFile(File file, String content) throws IOException {
         FileUtils.write(file, content, StandardCharsets.UTF_8, true);
     }
 }
