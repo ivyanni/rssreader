@@ -68,7 +68,7 @@ public class StubRssLoaderTest {
     public void testScheduleOneFeed() throws Exception {
         FeedConfiguration feedConfiguration = createStubFeed(RSS_STUB_FILENAME);
         feedUpdateSchedulerService.scheduleFeedUpdate(feedConfiguration);
-        Thread.sleep(500);
+        Thread.sleep(1000);
         addEntryToFeed(RSS_STUB_FILENAME, 2);
         Thread.sleep(3000);
         File file = new File(OUTPUT_FILENAME);
@@ -86,7 +86,7 @@ public class StubRssLoaderTest {
         FeedConfiguration atomConfiguration = createStubFeed(ATOM_STUB_FILENAME);
         feedUpdateSchedulerService.scheduleFeedUpdate(rssConfiguration);
         feedUpdateSchedulerService.scheduleFeedUpdate(atomConfiguration);
-        Thread.sleep(500);
+        Thread.sleep(1000);
         addEntryToFeed(RSS_STUB_FILENAME, 2);
         addEntryToFeed(ATOM_STUB_FILENAME, 3);
         Thread.sleep(3000);

@@ -2,7 +2,6 @@ package io.github.ivyanni.rssreader.utils;
 
 import io.github.ivyanni.rssreader.model.constants.CLIConstants;
 
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
@@ -25,23 +24,14 @@ public class CommandLineInputUtils {
      * @return String that contains valid file name
      */
     public static String inputFilename(Scanner scanner, URL feedUrl) {
-        String resultFilename = null;
-        while (resultFilename == null) {
-            System.out.print(CLIConstants.ENTER_FILENAME_MESSAGE);
-            String fileName = scanner.nextLine();
-            if (fileName.isBlank()) {
-                int divider = feedUrl.toString().lastIndexOf('/');
-                fileName = feedUrl.toString().substring(divider);
-            }
-            String realFilename = "output\\" + fileName + ".out";
-            File file = new File(realFilename);
-            if (fileName.contains("/") || fileName.contains("\\") || !file.isFile()) {
-                System.out.println(CLIConstants.INCORRECT_FILENAME_MESSAGE);
-            } else {
-                resultFilename = realFilename;
-            }
+        System.out.print(CLIConstants.ENTER_FILENAME_MESSAGE);
+        String fileName = scanner.nextLine();
+        if (fileName.isBlank()) {
+            int divider = feedUrl.toString().lastIndexOf('/');
+            fileName = feedUrl.toString().substring(divider + 1);
         }
-        return resultFilename;
+        fileName = fileName.replaceAll("[\\\\/:\"*?<>|]+", "_");
+        return "output\\" + fileName + ".out";
     }
 
     /**
