@@ -28,11 +28,6 @@ java -jar rssreader-final.jar
 * _remove_ - remove existing feed
 * _exit_ - shutdown application saving current configuration
 
-## Release History
-
-* 0.1
-    * First release
-
 ## Licencse
 
 Distributed under the GPL-3.0 license. See ``LICENSE`` for more information.
