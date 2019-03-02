@@ -13,7 +13,6 @@ Execute Maven command listed below. It will compile code, run tests and assembly
 ```sh
 mvn clean package
 ```
-Or you can just download compiled jar package on [Releases](https://github.com/ivyanni/rssreader/releases) page
 
 ## Usage example
 
