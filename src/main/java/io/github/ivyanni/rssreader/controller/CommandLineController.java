@@ -83,7 +83,6 @@ public class CommandLineController {
 
         boolean validationResult = feedValidatorService.validateFeed(feedConfiguration);
         if (validationResult) {
-            feedConfiguration.setLastRequestTime(Calendar.getInstance().getTime());
             feedUpdateSchedulerService.scheduleFeedUpdate(feedConfiguration);
             applicationConfiguration.getFeedConfigurations().put(feedName, feedConfiguration);
             System.out.println(CLIConstants.FEED_ADDED_MESSAGE);

@@ -7,6 +7,7 @@ import io.github.ivyanni.rssreader.service.tasks.FeedUpdateTask;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -27,6 +28,9 @@ public class FeedUpdateSchedulerServiceImpl implements FeedUpdateSchedulerServic
 
     @Override
     public void scheduleFeedUpdate(FeedConfiguration feedConfiguration) {
+        if(feedConfiguration.getLastRequestTime() == null) {
+            feedConfiguration.setLastRequestTime(Calendar.getInstance().getTime());
+        }
         Long delay = feedConfiguration.getDelay();
         ScheduledFuture future = executor.scheduleAtFixedRate(new FeedUpdateTask(feedConfiguration),
                 delay, delay, TimeUnit.SECONDS);

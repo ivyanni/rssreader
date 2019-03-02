@@ -1,28 +1,17 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<rss version="2.0">
-<channel>
-<title>Яндекс.Новости: Интернет</title>
-<link>https://news.yandex.ru/internet.html?from=rss</link>
-<description>Первая в России служба автоматической обработки и систематизации новостей. Сообщения ведущих российских и мировых СМИ. Обновление в режиме реального времени 24 часа в сутки.</description>
-<image>
-<url>https://company.yandex.ru/i/50x23.gif</url>
-<link>https://news.yandex.ru/internet.html?from=rss</link>
-<title>Яндекс.Новости: Интернет</title>
-</image>
-<lastBuildDate>23 Feb 2019 08:15:52 +0000</lastBuildDate>
-<item>
-<title>В Facebook решили отказаться от слежки за пользователями</title>
-<link>https://news.yandex.ru/story/V_Facebook_reshili_otkazatsya_ot_slezhki_za_polzovatelyami--6988f07fb8131134e08b9a61b6f85fb8?lang=ru&amp;from=rss&amp;stid=mEMBC1kCblEYcPN7yFAT</link>
-<guid>https://news.yandex.ru/story/V_Facebook_reshili_otkazatsya_ot_slezhki_za_polzovatelyami--6988f07fb8131134e08b9a61b6f85fb8?lang=ru&amp;from=rss&amp;stid=mEMBC1kCblEYcPN7yFAT</guid>
-<description>В Facebook решили отказаться от приложений, которые позволяют сотрудникам компании следить за пользователями, сообщает ТАСС со ссылкой на портал TechCrunch. Отмечается, что компания заблаговременно удалила свою программу Onavo VPN из магазина приложений на платформе Android.</description>
-<pubDate>23 Feb 2019 07:38:24 +0000</pubDate>
-</item>
-<item>
-<title>Huawei и Turkcell построят базовую сеть 5G</title>
-<link>https://news.yandex.ru/story/Huawei_i_Turkcell_postroyat_bazovuyu_set_5G--3fad8c373a11b0e5210820448ccc485b?lang=ru&amp;from=rss&amp;stid=-kT0</link>
-<guid>https://news.yandex.ru/story/Huawei_i_Turkcell_postroyat_bazovuyu_set_5G--3fad8c373a11b0e5210820448ccc485b?lang=ru&amp;from=rss&amp;stid=-kT0</guid>
-<description>Компания Huawei объявила о партнерстве с крупнейшим турецким оператором сотовой связи и поставщиком телекоммуникационных услуг Turkcell. Партнерство направлено на создание базовой сети 5G, которая будет основана на облачных технологиях.</description>
-<pubDate>21 Feb 2019 14:06:00 +0000</pubDate>
-</item>
-</channel>
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0">
+  <channel>
+    <title>Яндекс.Новости: Интернет</title>
+    <link>https://news.yandex.ru/internet.html?from=rss</link>
+    <description>Первая в России служба автоматической обработки и систематизации новостей. Сообщения ведущих российских и мировых СМИ. Обновление в режиме реального времени 24 часа в сутки.</description>
+    <pubDate>Sat, 23 Feb 2019 08:15:52 GMT</pubDate>
+    <dc:date>2019-02-23T08:15:52Z</dc:date>
+    <image>
+      <title>Яндекс.Новости: Интернет</title>
+      <url>https://company.yandex.ru/i/50x23.gif</url>
+      <link>https://news.yandex.ru/internet.html?from=rss</link>
+      <width>-1</width>
+      <height>-1</height>
+    </image>
+  </channel>
 </rss>

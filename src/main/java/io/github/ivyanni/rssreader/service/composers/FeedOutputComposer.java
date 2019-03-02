@@ -27,7 +27,7 @@ public class FeedOutputComposer {
      */
     public List<String> compose(FeedConfiguration feedConfiguration, SyndFeed feed) {
         List<SyndEntry> recentEntries = getRecentEntries(feedConfiguration, feed);
-        recentEntries = getFirstEntries(recentEntries, feedConfiguration.getChunkSize());
+        recentEntries = getLastEntries(recentEntries, feedConfiguration.getChunkSize());
         feedConfiguration.setLastRequestTime(Calendar.getInstance().getTime());
         return createStringListByAttributes(recentEntries, feedConfiguration.getOutputParams());
     }
@@ -48,14 +48,15 @@ public class FeedOutputComposer {
     }
 
     /**
-     * Leaves only first chunkSize entries.
+     * Leaves only last chunkSize entries.
      *
      * @param entries   Collection of feed entries
      * @param chunkSize Chunk size specified in configuration
-     * @return collection of entries with size <= specified chunk size
+     * @return collection of last entries
      */
-    private List<SyndEntry> getFirstEntries(List<SyndEntry> entries, Long chunkSize) {
-        return entries.size() > chunkSize ? entries.subList(0, chunkSize.intValue()) : entries;
+    private List<SyndEntry> getLastEntries(List<SyndEntry> entries, Long chunkSize) {
+        return entries.size() > chunkSize ?
+                entries.subList(entries.size() - chunkSize.intValue() - 1, entries.size() - 1) : entries;
     }
 
     /**

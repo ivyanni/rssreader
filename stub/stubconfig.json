@@ -7,8 +7,7 @@
       "chunkSize" : 2,
       "sourceUrl" : "https://news.yandex.ru/incident.rss",
       "outputParams" : [ "title", "publishedDate" ],
-      "lastRequestTime" : null,
-      "lastMessageTime" : null
+      "lastRequestTime" : null
     },
 	"yandex2" : {
       "delay" : 30,
@@ -16,8 +15,7 @@
       "chunkSize" : 2,
       "sourceUrl" : "https://news.yandex.ru/movies.rss",
       "outputParams" : [ "title", "publishedDate" ],
-      "lastRequestTime" : null,
-      "lastMessageTime" : null
+      "lastRequestTime" : null
     }
   }
 }
