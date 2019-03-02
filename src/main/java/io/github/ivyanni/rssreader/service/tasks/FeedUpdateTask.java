@@ -4,7 +4,7 @@ import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
-import io.github.ivyanni.rssreader.config.FeedConfiguration;
+import io.github.ivyanni.rssreader.model.FeedConfiguration;
 import io.github.ivyanni.rssreader.service.composers.FeedOutputComposer;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -38,22 +38,26 @@ public class FeedUpdateTask implements Runnable {
         try {
             SyndFeed feed = new SyndFeedInput().build(new XmlReader(feedConfiguration.getSourceUrl()));
             List<String> content = feedOutputComposer.compose(feedConfiguration, feed);
-            if (content.size() > 0) {
-                File file = new File(feedConfiguration.getOutputFilename());
-                if (!file.exists()) {
-                    file.getParentFile().mkdirs();
-                    file.createNewFile();
-                }
-                for (String string : content) {
-                    saveStringToFile(file, string);
-                }
-            }
+            saveContent(content);
         } catch (FeedException ex) {
             LOGGER.error("Exception was occurred while parsing feed data: {}", ex.getMessage(), ex);
         } catch (UnknownHostException ex) {
             LOGGER.error("Check your internet connection. Connection to {} was failed", ex.getMessage(), ex);
         } catch (IOException ex) {
             LOGGER.error("Exception was occurred while retrieving feed data: {}", ex.getMessage(), ex);
+        }
+    }
+
+    private void saveContent(List<String> content) throws IOException {
+        if (content.size() > 0) {
+            File file = new File(feedConfiguration.getOutputFilename());
+            if (!file.exists()) {
+                file.getParentFile().mkdirs();
+                file.createNewFile();
+            }
+            for (String string : content) {
+                saveStringToFile(file, string);
+            }
         }
     }
 

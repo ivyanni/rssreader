@@ -1,4 +1,4 @@
-package io.github.ivyanni.rssreader.constants;
+package io.github.ivyanni.rssreader.model.constants;
 
 /**
  * Constants used in Command Line Interface.

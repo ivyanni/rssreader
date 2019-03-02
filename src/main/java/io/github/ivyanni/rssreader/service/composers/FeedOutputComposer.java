@@ -2,7 +2,7 @@ package io.github.ivyanni.rssreader.service.composers;
 
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
-import io.github.ivyanni.rssreader.config.FeedConfiguration;
+import io.github.ivyanni.rssreader.model.FeedConfiguration;
 import io.github.ivyanni.rssreader.utils.RomeAttributesMapper;
 
 import java.util.ArrayList;
@@ -12,28 +12,28 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Composes output string using received feed items and specified feed configuration.
+ * Composes a collection of output strings.
  *
  * @author Ilia Vianni on 24.02.2019.
  */
 public class FeedOutputComposer {
 
     /**
-     * Composes string output.
+     * Composes a collection of RSS items in string format.
      *
      * @param feedConfiguration Current feed's configuration
      * @param feed              Feed received by ROME
-     * @return formatted output string
+     * @return collection of formatted RSS items
      */
     public List<String> compose(FeedConfiguration feedConfiguration, SyndFeed feed) {
         List<SyndEntry> recentEntries = getRecentEntries(feedConfiguration, feed);
         recentEntries = getFirstEntries(recentEntries, feedConfiguration.getChunkSize());
         feedConfiguration.setLastRequestTime(Calendar.getInstance().getTime());
-        return createStringByAttributes(recentEntries, feedConfiguration.getOutputParams());
+        return createStringListByAttributes(recentEntries, feedConfiguration.getOutputParams());
     }
 
     /**
-     * Filters out items that were already printed to file.
+     * Filters out items that were published before previous feed update.
      *
      * @param feedConfiguration Current feed's configuration
      * @param feed              Feed received by ROME
@@ -59,13 +59,13 @@ public class FeedOutputComposer {
     }
 
     /**
-     * Creates string that contains specified attributes of feed entries
+     * Creates strings collection where each contains user-specified attributes
      *
      * @param entries    Collection of feed entries
      * @param attributes List of feed parameters specified in configuration
-     * @return formatted string
+     * @return formatted strings collection
      */
-    private List<String> createStringByAttributes(List<SyndEntry> entries, List<String> attributes) {
+    private List<String> createStringListByAttributes(List<SyndEntry> entries, List<String> attributes) {
         List<String> stringList = new ArrayList<>();
         StringBuilder outputSb = new StringBuilder();
         entries.forEach(entry -> {

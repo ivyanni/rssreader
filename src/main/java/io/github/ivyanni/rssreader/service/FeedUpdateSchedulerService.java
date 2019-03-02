@@ -1,6 +1,6 @@
 package io.github.ivyanni.rssreader.service;
 
-import io.github.ivyanni.rssreader.config.FeedConfiguration;
+import io.github.ivyanni.rssreader.model.FeedConfiguration;
 
 /**
  * Manages scheduling of feed updates.

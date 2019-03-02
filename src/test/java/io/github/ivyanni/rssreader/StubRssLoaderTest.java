@@ -1,7 +1,7 @@
 package io.github.ivyanni.rssreader;
 
-import io.github.ivyanni.rssreader.config.ApplicationConfiguration;
-import io.github.ivyanni.rssreader.config.FeedConfiguration;
+import io.github.ivyanni.rssreader.model.ApplicationConfiguration;
+import io.github.ivyanni.rssreader.model.FeedConfiguration;
 import io.github.ivyanni.rssreader.service.FeedUpdateSchedulerService;
 import io.github.ivyanni.rssreader.service.impl.FeedUpdateSchedulerServiceImpl;
 import org.apache.commons.io.FileUtils;

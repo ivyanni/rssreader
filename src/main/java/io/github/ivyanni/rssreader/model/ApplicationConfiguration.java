@@ -1,4 +1,4 @@
-package io.github.ivyanni.rssreader.config;
+package io.github.ivyanni.rssreader.model;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,6 +1,6 @@
 package io.github.ivyanni.rssreader;
 
-import io.github.ivyanni.rssreader.config.ApplicationConfiguration;
+import io.github.ivyanni.rssreader.model.ApplicationConfiguration;
 import io.github.ivyanni.rssreader.service.ConfigurationLoaderService;
 import io.github.ivyanni.rssreader.service.impl.ConfigurationLoaderServiceImpl;
 import org.junit.Rule;

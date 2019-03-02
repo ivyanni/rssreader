@@ -1,4 +1,4 @@
-package io.github.ivyanni.rssreader.config;
+package io.github.ivyanni.rssreader.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

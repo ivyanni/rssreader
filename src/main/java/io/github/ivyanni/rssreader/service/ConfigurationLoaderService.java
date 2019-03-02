@@ -1,6 +1,6 @@
 package io.github.ivyanni.rssreader.service;
 
-import io.github.ivyanni.rssreader.config.ApplicationConfiguration;
+import io.github.ivyanni.rssreader.model.ApplicationConfiguration;
 
 /**
  * Manages operations with application configuration.

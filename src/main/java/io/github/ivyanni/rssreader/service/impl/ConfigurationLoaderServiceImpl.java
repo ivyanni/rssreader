@@ -2,7 +2,7 @@ package io.github.ivyanni.rssreader.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import io.github.ivyanni.rssreader.config.ApplicationConfiguration;
+import io.github.ivyanni.rssreader.model.ApplicationConfiguration;
 import io.github.ivyanni.rssreader.service.ConfigurationLoaderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

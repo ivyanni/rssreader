@@ -1,8 +1,8 @@
 package io.github.ivyanni.rssreader.controller;
 
-import io.github.ivyanni.rssreader.config.ApplicationConfiguration;
-import io.github.ivyanni.rssreader.config.FeedConfiguration;
-import io.github.ivyanni.rssreader.constants.CLIConstants;
+import io.github.ivyanni.rssreader.model.ApplicationConfiguration;
+import io.github.ivyanni.rssreader.model.FeedConfiguration;
+import io.github.ivyanni.rssreader.model.constants.CLIConstants;
 import io.github.ivyanni.rssreader.service.FeedUpdateSchedulerService;
 import io.github.ivyanni.rssreader.service.FeedValidatorService;
 import io.github.ivyanni.rssreader.service.impl.FeedUpdateSchedulerServiceImpl;
@@ -31,9 +31,12 @@ public class CommandLineController {
         this.feedValidatorService = new FeedValidatorServiceImpl();
     }
 
+    /**
+     * Starts main interaction with user.
+     */
     public void startMainInteraction() {
         feedUpdateSchedulerService.scheduleAllFeedUpdates();
-        showWelcomeMessage();
+        printWelcomeMessage();
         while (true) {
             System.out.print(CLIConstants.ENTER_COMMAND_MESSAGE);
             Scanner scanner = new Scanner(System.in);
@@ -44,7 +47,7 @@ public class CommandLineController {
                     addNewFeed(scanner);
                     break;
                 case CLIConstants.SHOW_EXISTING_FEEDS_COMMAND:
-                    listExistingFeed();
+                    printExistingFeeds();
                     break;
                 case CLIConstants.CHANGE_FEED_PARAMS_COMMAND:
                     changeExistingFeed(scanner);
@@ -64,7 +67,7 @@ public class CommandLineController {
      *
      * @param scanner User's input Scanner
      */
-    public void addNewFeed(Scanner scanner) {
+    private void addNewFeed(Scanner scanner) {
         Set<String> existingNames = applicationConfiguration.getFeedConfigurations().keySet();
         String feedName = CommandLineInputUtils.inputFeedName(scanner, existingNames, true);
         URL feedUrl = CommandLineInputUtils.inputFeedUrl(scanner);
@@ -94,7 +97,7 @@ public class CommandLineController {
      *
      * @param scanner User's input Scanner
      */
-    public void changeExistingFeed(Scanner scanner) {
+    private void changeExistingFeed(Scanner scanner) {
         Set<String> existingNames = applicationConfiguration.getFeedConfigurations().keySet();
         String feedName = CommandLineInputUtils.inputFeedName(scanner, existingNames, false);
         FeedConfiguration feedConfiguration = applicationConfiguration.getFeedConfigurations().get(feedName);
@@ -136,11 +139,11 @@ public class CommandLineController {
     }
 
     /**
-     * Manages interaction that results to feed removal.
+     * Manages interaction that leads to feed removal.
      *
      * @param scanner User's input Scanner
      */
-    public void removeFeed(Scanner scanner) {
+    private void removeFeed(Scanner scanner) {
         Set<String> existingNames = applicationConfiguration.getFeedConfigurations().keySet();
         String feedName = CommandLineInputUtils.inputFeedName(scanner, existingNames, false);
         feedUpdateSchedulerService.stopFeedUpdate(feedName);
@@ -149,9 +152,9 @@ public class CommandLineController {
     }
 
     /**
-     * Shows existing feeds.
+     * Prints existing feed list.
      */
-    public void listExistingFeed() {
+    private void printExistingFeeds() {
         if (!applicationConfiguration.getFeedConfigurations().isEmpty()) {
             System.out.println(CLIConstants.EXISTING_FEEDS_MESSAGE);
             StringBuilder existingFeedsSb = new StringBuilder();
@@ -168,9 +171,9 @@ public class CommandLineController {
     }
 
     /**
-     * Shows welcome message.
+     * Prints welcome message.
      */
-    public void showWelcomeMessage() {
+    private void printWelcomeMessage() {
         System.out.println("---------------------");
         System.out.println(CLIConstants.WELCOME_MESSAGE);
         System.out.println("---------------------");
