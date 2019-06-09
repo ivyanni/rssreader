@@ -18,8 +18,9 @@ mvn clean package
 
 Execute command
 ```sh
-java -jar rssreader-final.jar
+java -jar target/rssreader-final.jar
 ```
+Then use one of the available commands to manage feed subscriptions
 
 ### Available commands
 * _add_ - create new feed subscription
