@@ -16,7 +16,7 @@
         <rome.version>1.12.0</rome.version>
         <slf4j.version>1.7.25</slf4j.version>
         <commons-io.version>2.6</commons-io.version>
-        <jackson.version>2.9.10.1</jackson.version>
+        <jackson.version>2.9.10.3</jackson.version>
         <junit.version>4.12</junit.version>
     </properties>
 
